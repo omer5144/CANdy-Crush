@@ -1,0 +1,8 @@
+{
+    "files.associations": {
+        "signals.h": "c",
+        "util.h": "c",
+        "speed.h": "c"
+    },
+    "C_Cpp.errorSquiggles": "enabled"
+}
