@@ -1,10 +1,10 @@
+#ifndef SIGNALS_H
+#define SIGNALS_H
+
 #include <linux/can.h>
 #include <linux/can/raw.h>
 #include <string.h>
 #include "util.h"
-
-#ifndef SIGNALS_H
-#define SIGNALS_H
 
 #define SIGNAL_ID 392
 #define SIGNAL_POS 0

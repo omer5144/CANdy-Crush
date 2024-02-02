@@ -1,3 +1,6 @@
+#ifndef UTIL_H
+#define UTIL_H
+
 #include <linux/can.h>
 #include <linux/can/raw.h>
 #include <unistd.h>
@@ -8,9 +11,6 @@
 #include <net/if.h>
 #include <stdlib.h>
 #include <string.h>
-
-#ifndef UTIL_H
-#define UTIL_H
 
 #define DATA_DIR "./data/"
 #define CAN_TRAFFIC_FILE_PATH DATA_DIR "sample-can.log"

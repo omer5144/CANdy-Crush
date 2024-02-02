@@ -1,10 +1,10 @@
+#ifndef LIGHTS_H
+#define LIGHTS_H
+
 #include <linux/can.h>
 #include <linux/can/raw.h>
 #include <string.h>
 #include "util.h"
-
-#ifndef LIGHTS_H
-#define LIGHTS_H
 
 #define LIGHTS_IS_ON_ID 666
 #define LIGHTS_VOLUME_ID 667

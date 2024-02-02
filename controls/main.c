@@ -139,7 +139,7 @@ int main(int argc, char *argv[])
 	interface_name = parse_arguments(argc, argv);
 	create_can_traffic_process(interface_name);
 	sock = create_can_socket(interface_name);
-	gui_data = setup_gui(&gui_data);	
+	gui_data = setup_gui();	
 	
 	main_loop(gui_data, sock);
 	cleanup(gui_data, sock);

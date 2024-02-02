@@ -1,11 +1,11 @@
+#ifndef SPEED_H
+#define SPEED_H
+
 #include <linux/can.h>
 #include <linux/can/raw.h>
 #include <string.h>
 #include <stdlib.h>
 #include "util.h"
-
-#ifndef SPEED_H
-#define SPEED_H
 
 #define SPEED_ID 580
 #define DEFAULT_SPEED_POS 3

@@ -10,8 +10,8 @@ char *get_data(char *fname, char *data_file)
 {
 	if (strlen(DATA_DIR) + strlen(fname) > DATA_FILE_SIZE - 1)
 		return NULL;
-	strncpy(data_file, DATA_DIR, 255);
-	strncat(data_file, fname, 255 - strlen(data_file));
+	strncpy(data_file, DATA_DIR, DATA_FILE_SIZE - 1);
+	strncat(data_file, fname, DATA_FILE_SIZE - 1 - strlen(data_file));
 	return data_file;
 }
 
