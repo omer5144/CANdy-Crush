@@ -21,26 +21,30 @@ void send_speed(int sock, int speed)
 	send_pkt(CAN_MTU, cf, sock);
 }
 
-void checkAccel(int sock, int currentTime, speed_state_t *speed_state)
+void check_accel(int sock, int current_time, speed_state_t *speed_state)
 {
 	float rate = MAX_SPEED / (ACCEL_RATE * 100);
-	if (currentTime > speed_state->lastAccel + 10) // Updated every 10 ms
+	if (current_time > speed_state->last_accel_time + 10) // Updated every 10 ms
 	{
-		if (speed_state->throttle < 0)
+		switch (speed_state->throttle)
 		{
+		case DECCEL_THROTTLE:
 			speed_state->current_speed -= rate;
 			if (speed_state->current_speed < 1)
+			{
 				speed_state->current_speed = 0;
-		}
-		else if (speed_state->throttle > 0)
-		{
+			}
+			break;
+		case ACCEL_THROTTLE:
 			speed_state->current_speed += rate;
 			if (speed_state->current_speed > MAX_SPEED) // Limiter
 			{ 
 				speed_state->current_speed = MAX_SPEED;
 			}
+			break;
 		}
+
 		send_speed(sock, speed_state->current_speed);
-		speed_state->lastAccel = currentTime;
+		speed_state->last_accel_time = current_time;
 	}
 }

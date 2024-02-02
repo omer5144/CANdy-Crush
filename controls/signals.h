@@ -10,16 +10,25 @@
 #define SIGNAL_POS 0
 #define SIGNAL_LEN 8
 
-#define LEFT_SIGNAL_VALUE 1
-#define RIGHT_SIGNAL_VALUE 2
+typedef enum {
+	NO_SIGNAL = 0,
+	LEFT_SIGNAL = 1,
+	RIGHT_SIGNAL = 2
+} signal_t;
+
+typedef enum {
+	LEFT_TURN = -1,
+	NO_TURN = 0,
+	RIGHT_TURN = 1
+} turn_t;
 
 typedef struct {
-	char signal;
-	int turning;
-	int lastTurnSignal;
+	signal_t signal;
+	turn_t turn;
+	int last_turn_time;
 } signal_state_t;
 
 
-void checkTurn(int sock, int currentTime, signal_state_t *signal_state);
+void check_turn_signal(int sock, int current_time, signal_state_t *signal_state);
 
 #endif

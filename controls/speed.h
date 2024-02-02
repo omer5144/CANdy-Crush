@@ -14,13 +14,18 @@
 #define MAX_SPEED 90.0
 #define ACCEL_RATE 8.0
 
+typedef enum {
+	DECCEL_THROTTLE = -1,
+	ACCEL_THROTTLE = 1
+} throttle_t;
+
 typedef struct {
-	int throttle;
+	throttle_t throttle;
 	float current_speed;
-	int lastAccel;
+	int last_accel_time;
 } speed_state_t;
 
 
-void checkAccel(int sock, int currentTime, speed_state_t *speed_state);
+void check_accel(int sock, int currentTime, speed_state_t *speed_state);
 
 #endif
