@@ -1,6 +1,6 @@
 #include "signals.h"
 
-void send_turn_signal(int sock, char signal)
+void send_turn_signal(int sock, signal_t signal)
 {
 	struct canfd_frame cf;
 
@@ -12,23 +12,24 @@ void send_turn_signal(int sock, char signal)
 }
 
 
-void checkTurn(int sock, int currentTime, signal_state_t *signal_state)
+void check_turn_signal(int sock, int current_time, signal_state_t *signal_state)
 {
-	if (currentTime > signal_state->lastTurnSignal + 500)
+	if (current_time > signal_state->last_turn_time + 500)
 	{
-		if (signal_state->turning < 0)
+		switch (signal_state->turn)
 		{
-			signal_state->signal ^= LEFT_SIGNAL_VALUE;
+		case LEFT_TURN:
+			signal_state->signal = signal_state->signal == NO_SIGNAL ? LEFT_SIGNAL : NO_SIGNAL;
+			break;
+		case RIGHT_TURN:
+			signal_state->signal = signal_state->signal == NO_SIGNAL ? RIGHT_SIGNAL : NO_SIGNAL;
+			break;
+		case NO_TURN:
+			signal_state->signal = NO_SIGNAL;
+			break;
 		}
-		else if (signal_state->turning > 0)
-		{
-			signal_state->signal ^= RIGHT_SIGNAL_VALUE;
-		}
-		else
-		{
-			signal_state->signal = 0;
-		}
+		
 		send_turn_signal(sock, signal_state->signal);
-		signal_state->lastTurnSignal = currentTime;
+		signal_state->last_turn_time = current_time;
 	}
 }

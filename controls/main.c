@@ -13,6 +13,7 @@
 #include "util.h"
 #include "signals.h"
 #include "speed.h"
+#include "lights.h"
 #include "gui.h"
 
 void usage(char *msg)
@@ -50,7 +51,8 @@ void main_loop(gui_data_t gui_data, int sock)
 	SDL_Event event;
 	speed_state_t speed_state = {0, 0, 0};
 	signal_state_t signal_state = {0, 0, 0};
-	int currentTime;
+	lights_state_t lights_state = {0, VOLUME_NONE, VOLUME_NONE};
+	int current_time;
 
 	while (running)
 	{
@@ -74,13 +76,22 @@ void main_loop(gui_data_t gui_data, int sock)
 				switch (event.key.keysym.sym)
 				{
 				case SDLK_UP:
-					speed_state.throttle = 1;
+					speed_state.throttle = ACCEL_THROTTLE;
 					break;
 				case SDLK_LEFT:
-					signal_state.turning = -1;
+					signal_state.turn = LEFT_TURN;
 					break;
 				case SDLK_RIGHT:
-					signal_state.turning = 1;
+					signal_state.turn = RIGHT_TURN;
+					break;
+				case SDLK_1:
+					lights_state.new_lights = VOLUME_LOW;
+					break;
+				case SDLK_2:
+					lights_state.new_lights = VOLUME_MEDIUM;
+					break;
+				case SDLK_3:
+					lights_state.new_lights = VOLUME_HIGH;
 					break;
 				break;
 				}
@@ -89,19 +100,25 @@ void main_loop(gui_data_t gui_data, int sock)
 				switch (event.key.keysym.sym)
 				{
 				case SDLK_UP:
-					speed_state.throttle = -1;
+					speed_state.throttle = DECCEL_THROTTLE;
 					break;
 				case SDLK_LEFT:
 				case SDLK_RIGHT:
-					signal_state.turning = 0;
+					signal_state.turn = NO_TURN;
+					break;
+				case SDLK_1:
+				case SDLK_2:
+				case SDLK_3:
+					lights_state.new_lights = VOLUME_NONE;
 					break;
 				}
 				break;
 			}
 		}
-		currentTime = SDL_GetTicks();
-		checkAccel(sock, currentTime, &speed_state);
-		checkTurn(sock, currentTime, &signal_state);
+		current_time = SDL_GetTicks();
+		check_accel(sock, current_time, &speed_state);
+		check_turn_signal(sock, current_time, &signal_state);
+		check_lights(sock, &lights_state);
 		SDL_Delay(5);
 	}
 }
