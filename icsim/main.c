@@ -1,9 +1,3 @@
-/*
- * Instrument cluster simulator
- *
- * (c) 2014 Open Garages - Craig Smith <craig@theialabs.com>
- */
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -19,91 +13,72 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 
-#include "lib.h"
-
-#ifndef DATA_DIR
-#define DATA_DIR "./data/"  // Needs trailing slash
-#endif
+#define DATA_DIR "./data/" // Needs trailing slash
 
 #define SCREEN_WIDTH 692
 #define SCREEN_HEIGHT 329
-#define DOOR_LOCKED 0
-#define DOOR_UNLOCKED 1
 #define OFF 0
 #define ON 1
-#define DEFAULT_DOOR_ID 411 // 0x19b
-#define DEFAULT_DOOR_BYTE 2
-#define CAN_DOOR1_LOCK 1
-#define CAN_DOOR2_LOCK 2 
-#define CAN_DOOR3_LOCK 4
-#define CAN_DOOR4_LOCK 8
-#define DEFAULT_SIGNAL_ID 392 // 0x188
-#define DEFAULT_SIGNAL_BYTE 0
+#define SIGNAL_ID 392 // 0x188
+#define SIGNAL_POS 0
 #define CAN_LEFT_SIGNAL 1
 #define CAN_RIGHT_SIGNAL 2
-#define DEFAULT_SPEED_ID 580 // 0x244
-#define DEFAULT_SPEED_BYTE 3 // bytes 3,4
+#define SPEED_ID 580 // 0x244
+#define SPEED_POS 3 // bytes 3,4
 
-// For now, specific models will be done as constants.  Later
-// We should use a config file
-#define MODEL_BMW_X1_SPEED_ID 0x1B4
-#define MODEL_BMW_X1_SPEED_BYTE 0
-#define MODEL_BMW_X1_RPM_ID 0x0AA
-#define MODEL_BMW_X1_RPM_BYTE 4
-#define MODEL_BMW_X1_HANDBRAKE_ID 0x1B4  // Not implemented yet
-#define MODEL_BMW_X1_HANDBRAKE_BYTE 5
-
-const int canfd_on = 1;
-int debug = 0;
-int randomize = 0;
-int seed = 0;
-int door_pos = DEFAULT_DOOR_BYTE;
-int signal_pos = DEFAULT_SIGNAL_BYTE;
-int speed_pos = DEFAULT_SPEED_BYTE;
 long current_speed = 0;
-int door_status[4];
 int turn_status[2];
-char *model = NULL;
 char data_file[256];
-SDL_Renderer *renderer = NULL;
-SDL_Texture *base_texture = NULL;
-SDL_Texture *needle_tex = NULL;
-SDL_Texture *sprite_tex = NULL;
-SDL_Rect speed_rect;
 
-// Simple map function
+typedef struct
+{
+  SDL_Window *window;
+  SDL_Renderer *renderer;
+  SDL_Texture *base_texture;
+  SDL_Texture *needle_tex;
+  SDL_Texture *sprite_tex;
+  SDL_Rect speed_rect;
+  SDL_Surface *image;
+  SDL_Surface *needle;
+  SDL_Surface *sprites;
+} gui_data_t;
+
+typedef struct
+{
+  struct msghdr msg;
+  struct canfd_frame frame;
+  struct sockaddr_can addr;
+  struct iovec iov;
+  char ctrlmsg[CMSG_SPACE(sizeof(struct timeval)) + CMSG_SPACE(sizeof(__u32))];
+} msg_data_t;
+
 long map(long x, long in_min, long in_max, long out_min, long out_max)
 {
   return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 }
 
-// Adds data dir to file name
-// Uses a single pointer so not to have a memory leak
-// returns point to data_files or NULL if append is too large
-char *get_data(char *fname) {
-  if(strlen(DATA_DIR) + strlen(fname) > 255) return NULL;
+char *get_data(char *fname)
+{
+  if (strlen(DATA_DIR) + strlen(fname) > 255)
+    return NULL;
   strncpy(data_file, DATA_DIR, 255);
-  strncat(data_file, fname, 255-strlen(data_file));
+  strncat(data_file, fname, 255 - strlen(data_file));
   return data_file;
 }
 
-/* Default vehicle state */
-void init_car_state() {
-  door_status[0] = DOOR_LOCKED;
-  door_status[1] = DOOR_LOCKED;
-  door_status[2] = DOOR_LOCKED;
-  door_status[3] = DOOR_LOCKED;
+void init_car_state()
+{
   turn_status[0] = OFF;
   turn_status[1] = OFF;
 }
 
-/* Empty IC */
-void blank_ic() {
-  SDL_RenderCopy(renderer, base_texture, NULL, NULL);
+void blank_ic(gui_data_t gui_data)
+{
+  SDL_RenderCopy(gui_data.renderer, gui_data.base_texture, NULL, NULL);
 }
 
-/* Updates speedo */
-void update_speed() {
+void update_speed(gui_data_t gui_data)
+{
   SDL_Rect dial_rect;
   SDL_Point center;
   double angle = 0;
@@ -111,91 +86,31 @@ void update_speed() {
   dial_rect.y = 80;
   dial_rect.h = 130;
   dial_rect.w = 300;
-  SDL_RenderCopy(renderer, base_texture, &dial_rect, &dial_rect);
+  SDL_RenderCopy(gui_data.renderer, gui_data.base_texture, &dial_rect, &dial_rect);
   /* Because it's a curve we do a smaller rect for the top */
   dial_rect.x = 250;
   dial_rect.y = 30;
   dial_rect.h = 65;
   dial_rect.w = 200;
-  SDL_RenderCopy(renderer, base_texture, &dial_rect, &dial_rect);
+  SDL_RenderCopy(gui_data.renderer, gui_data.base_texture, &dial_rect, &dial_rect);
   // And one more smaller box for the pivot point of the needle
   dial_rect.x = 323;
   dial_rect.y = 171;
   dial_rect.h = 52;
   dial_rect.w = 47;
-  SDL_RenderCopy(renderer, base_texture, &dial_rect, &dial_rect);
+  SDL_RenderCopy(gui_data.renderer, gui_data.base_texture, &dial_rect, &dial_rect);
   center.x = 135;
   center.y = 20;
   angle = map(current_speed, 0, 280, 0, 180);
-  if(angle < 0) angle = 0;
-  if(angle > 180) angle = 180;
-  SDL_RenderCopyEx(renderer, needle_tex, NULL, &speed_rect, angle, &center, SDL_FLIP_NONE);
+  if (angle < 0)
+    angle = 0;
+  if (angle > 180)
+    angle = 180;
+  SDL_RenderCopyEx(gui_data.renderer, gui_data.needle_tex, NULL, &gui_data.speed_rect, angle, &center, SDL_FLIP_NONE);
 }
 
-/* Updates door unlocks simulated by door open icons */
-void update_doors() {
-  SDL_Rect door_area, update, pos;
-  door_area.x = 390;
-  door_area.y = 215;
-  door_area.w = 110;
-  door_area.h = 85;
-  SDL_RenderCopy(renderer, base_texture, &door_area, &door_area);
-  // No update if all doors are locked
-  if(door_status[0] == DOOR_LOCKED && door_status[1] == DOOR_LOCKED &&
-     door_status[2] == DOOR_LOCKED && door_status[3] == DOOR_LOCKED) return;
-  // Make the base body red if even one door is unlocked
-  update.x = 440;
-  update.y = 239;
-  update.w = 45;
-  update.h = 83;
-  memcpy(&pos, &update, sizeof(SDL_Rect));
-  pos.x -= 22;
-  pos.y -= 22;
-  SDL_RenderCopy(renderer, sprite_tex, &update, &pos);
-  if(door_status[0] == DOOR_UNLOCKED) {
-    update.x = 420;
-    update.y = 263;
-    update.w = 21;
-    update.h = 22;
-    memcpy(&pos, &update, sizeof(SDL_Rect));
-    pos.x -= 22;
-    pos.y -= 22;
-    SDL_RenderCopy(renderer, sprite_tex, &update, &pos);
-  }
-  if(door_status[1] == DOOR_UNLOCKED) {
-    update.x = 484;
-    update.y = 261;
-    update.w = 21;
-    update.h = 22;
-    memcpy(&pos, &update, sizeof(SDL_Rect));
-    pos.x -= 22;
-    pos.y -= 22;
-    SDL_RenderCopy(renderer, sprite_tex, &update, &pos);
-  }
-  if(door_status[2] == DOOR_UNLOCKED) {
-    update.x = 420;
-    update.y = 284;
-    update.w = 21;
-    update.h = 22;
-    memcpy(&pos, &update, sizeof(SDL_Rect));
-    pos.x -= 22;
-    pos.y -= 22;
-    SDL_RenderCopy(renderer, sprite_tex, &update, &pos);
-  }
-  if(door_status[3] == DOOR_UNLOCKED) {
-    update.x = 484;
-    update.y = 287;
-    update.w = 21;
-    update.h = 22;
-    memcpy(&pos, &update, sizeof(SDL_Rect));
-    pos.x -= 22;
-    pos.y -= 22;
-    SDL_RenderCopy(renderer, sprite_tex, &update, &pos);
-  }
-}
-
-/* Updates turn signals */
-void update_turn_signals() {
+void update_turn_signals(gui_data_t gui_data)
+{
   SDL_Rect left, right, lpos, rpos;
   left.x = 213;
   left.y = 51;
@@ -209,295 +124,246 @@ void update_turn_signals() {
   lpos.y -= 22;
   rpos.x -= 22;
   rpos.y -= 22;
-  if(turn_status[0] == OFF) {
-	SDL_RenderCopy(renderer, base_texture, &lpos, &lpos);
-  } else {
-	SDL_RenderCopy(renderer, sprite_tex, &left, &lpos);
+  if (turn_status[0] == OFF)
+  {
+    SDL_RenderCopy(gui_data.renderer, gui_data.base_texture, &lpos, &lpos);
   }
-  if(turn_status[1] == OFF) {
-	SDL_RenderCopy(renderer, base_texture, &rpos, &rpos);
-  } else {
-	SDL_RenderCopy(renderer, sprite_tex, &right, &rpos);
+  else
+  {
+    SDL_RenderCopy(gui_data.renderer, gui_data.sprite_tex, &left, &lpos);
+  }
+  if (turn_status[1] == OFF)
+  {
+    SDL_RenderCopy(gui_data.renderer, gui_data.base_texture, &rpos, &rpos);
+  }
+  else
+  {
+    SDL_RenderCopy(gui_data.renderer, gui_data.sprite_tex, &right, &rpos);
   }
 }
 
-/* Redraws the IC updating everything 
- * Slowest way to go.  Should only use on init
- */
-void redraw_ic() {
-  blank_ic();
-  update_speed();
-  update_doors();
-  update_turn_signals();
-  SDL_RenderPresent(renderer);
+void draw_ic(gui_data_t gui_data)
+{
+  blank_ic(gui_data);
+  update_speed(gui_data);
+  update_turn_signals(gui_data);
+  SDL_RenderPresent(gui_data.renderer);
 }
 
-/* Parses CAN fram and updates current_speed */
-void update_speed_status(struct canfd_frame *cf, int maxdlen) {
+void update_speed_status(struct canfd_frame *cf, int maxdlen, gui_data_t gui_data)
+{
   int len = (cf->len > maxdlen) ? maxdlen : cf->len;
-  if(len < speed_pos + 1) return;
-  if (model) {
-	if (!strncmp(model, "bmw", 3)) {
-		current_speed = (((cf->data[speed_pos + 1] - 208) * 256) + cf->data[speed_pos]) / 16;
-	}
-  } else {
-	  int speed = cf->data[speed_pos] << 8;
-	  speed += cf->data[speed_pos + 1];
-	  speed = speed / 100; // speed in kilometers
-	  current_speed = speed * 0.6213751; // mph
-  }
-  update_speed();
-  SDL_RenderPresent(renderer);
+  if (len < SPEED_POS + 1)
+    return;
+
+  int speed = cf->data[SPEED_POS] << 8;
+  speed += cf->data[SPEED_POS + 1];
+  speed = speed / 100;               // speed in kilometers
+  current_speed = speed * 0.6213751; // mph
+  
+  update_speed(gui_data);
+  SDL_RenderPresent(gui_data.renderer);
 }
 
-/* Parses CAN frame and updates turn signal status */
-void update_signal_status(struct canfd_frame *cf, int maxdlen) {
+void update_signal_status(struct canfd_frame *cf, int maxdlen, gui_data_t gui_data)
+{
   int len = (cf->len > maxdlen) ? maxdlen : cf->len;
-  if(len < signal_pos) return;
-  if(cf->data[signal_pos] & CAN_LEFT_SIGNAL) {
+  if (len < SIGNAL_POS)
+    return;
+  if (cf->data[SIGNAL_POS] & CAN_LEFT_SIGNAL)
+  {
     turn_status[0] = ON;
-  } else {
+  }
+  else
+  {
     turn_status[0] = OFF;
   }
-  if(cf->data[signal_pos] & CAN_RIGHT_SIGNAL) {
+  if (cf->data[SIGNAL_POS] & CAN_RIGHT_SIGNAL)
+  {
     turn_status[1] = ON;
-  } else {
+  }
+  else
+  {
     turn_status[1] = OFF;
   }
-  update_turn_signals();
-  SDL_RenderPresent(renderer);
+  update_turn_signals(gui_data);
+  SDL_RenderPresent(gui_data.renderer);
 }
 
-/* Parses CAN frame and updates door status */
-void update_door_status(struct canfd_frame *cf, int maxdlen) {
-  int len = (cf->len > maxdlen) ? maxdlen : cf->len;
-  if(len < door_pos) return;
-  if(cf->data[door_pos] & CAN_DOOR1_LOCK) {
-	door_status[0] = DOOR_LOCKED;
-  } else {
-	door_status[0] = DOOR_UNLOCKED;
-  }
-  if(cf->data[door_pos] & CAN_DOOR2_LOCK) {
-	door_status[1] = DOOR_LOCKED;
-  } else {
-	door_status[1] = DOOR_UNLOCKED;
-  }
-  if(cf->data[door_pos] & CAN_DOOR3_LOCK) {
-	door_status[2] = DOOR_LOCKED;
-  } else {
-	door_status[2] = DOOR_UNLOCKED;
-  }
-  if(cf->data[door_pos] & CAN_DOOR4_LOCK) {
-	door_status[3] = DOOR_LOCKED;
-  } else {
-	door_status[3] = DOOR_UNLOCKED;
-  }
-  update_doors();
-  SDL_RenderPresent(renderer);
-}
-
-void Usage(char *msg) {
-  if(msg) printf("%s\n", msg);
-  printf("Usage: icsim [options] <can>\n");
-  printf("\t-r\trandomize IDs\n");
-  printf("\t-s\tseed value\n");
-  printf("\t-d\tdebug mode\n");
-  printf("\t-m\tmodel NAME  (Ex: -m bmw)\n");
+void Usage(char *msg)
+{
+  if (msg)
+    printf("%s\n", msg);
+  printf("Usage: icsim <can>\n");
   exit(1);
 }
 
-int main(int argc, char *argv[]) {
+char *parse_arguments(int argc, char *argv[])
+{
   int opt;
-  int can;
-  struct ifreq ifr;
-  struct sockaddr_can addr;
-  struct canfd_frame frame;
-  struct iovec iov;
-  struct msghdr msg;
-  struct cmsghdr *cmsg;
-  struct stat dirstat;
-  char ctrlmsg[CMSG_SPACE(sizeof(struct timeval)) + CMSG_SPACE(sizeof(__u32))];
-  int running = 1;
-  int nbytes, maxdlen;
-  int seed = 0;
-  canid_t door_id, signal_id, speed_id;
-  SDL_Event event;
 
-  while ((opt = getopt(argc, argv, "rs:dm:h?")) != -1) {
-    switch(opt) {
-	case 'r':
-		randomize = 1;
-		break;
-	case 's':
-		seed = atoi(optarg);
-		break;
-	case 'd':
-		debug = 1;
-		break;
-	case 'm':
-		model = optarg;
-		break;
-	case 'h':
-	case '?':
-	default:
-		Usage(NULL);
-		break;
+  while ((opt = getopt(argc, argv, "h?")) != -1)
+  {
+    switch (opt)
+    {
+    case 'h':
+    case '?':
+    default:
+      Usage(NULL);
+      break;
     }
   }
 
-  if (optind >= argc) Usage("You must specify at least one can device");
+  if (optind >= argc)
+    Usage("You must specify at least one can device");
 
-  if (seed && randomize) Usage("You can not specify a seed value AND randomize the seed");
+  return argv[optind];
+}
 
-  // Verify data directory exists
-  if(stat(DATA_DIR, &dirstat) == -1) {
-  	printf("ERROR: DATA_DIR not found.  Define in make file or run in src dir\n");
-	exit(34);
-  }
-  
-  // Create a new raw CAN socket
-  can = socket(PF_CAN, SOCK_RAW, CAN_RAW);
-  if(can < 0) Usage("Couldn't create raw socket");
+int create_can_socket(char *interface_name, msg_data_t *msg_data)
+{
+  int sock = -1;
+  struct ifreq ifr;
+  int canfd_on = 1;
 
-  addr.can_family = AF_CAN;
+  sock = socket(PF_CAN, SOCK_RAW, CAN_RAW);
+  if (sock < 0)
+    Usage("Couldn't create raw socket");
+
+  msg_data->addr.can_family = AF_CAN;
   memset(&ifr.ifr_name, 0, sizeof(ifr.ifr_name));
-  strncpy(ifr.ifr_name, argv[optind], strlen(argv[optind]));
+  strncpy(ifr.ifr_name, interface_name, strlen(interface_name));
   printf("Using CAN interface %s\n", ifr.ifr_name);
-  if (ioctl(can, SIOCGIFINDEX, &ifr) < 0) {
+  if (ioctl(sock, SIOCGIFINDEX, &ifr) < 0)
+  {
     perror("SIOCGIFINDEX");
     exit(1);
   }
-  addr.can_ifindex = ifr.ifr_ifindex;
-  // CAN FD Mode
-  setsockopt(can, SOL_CAN_RAW, CAN_RAW_FD_FRAMES, &canfd_on, sizeof(canfd_on));
+  msg_data->addr.can_ifindex = ifr.ifr_ifindex;
+  setsockopt(sock, SOL_CAN_RAW, CAN_RAW_FD_FRAMES, &canfd_on, sizeof(canfd_on));
 
-  iov.iov_base = &frame;
-  iov.iov_len = sizeof(frame);
-  msg.msg_name = &addr;
-  msg.msg_namelen = sizeof(addr);
-  msg.msg_iov = &iov;
-  msg.msg_iovlen = 1;
-  msg.msg_control = &ctrlmsg;
-  msg.msg_controllen = sizeof(ctrlmsg);
-  msg.msg_flags = 0;
+  msg_data->iov.iov_base = &msg_data->frame;
+  msg_data->iov.iov_len = sizeof(msg_data->frame);
+  msg_data->msg.msg_name = &msg_data->addr;
+  msg_data->msg.msg_namelen = sizeof(msg_data->addr);
+  msg_data->msg.msg_iov = &msg_data->iov;
+  msg_data->msg.msg_iovlen = 1;
+  msg_data->msg.msg_control = &msg_data->ctrlmsg;
+  msg_data->msg.msg_controllen = sizeof(msg_data->ctrlmsg);
+  msg_data->msg.msg_flags = 0;
 
-  if (bind(can, (struct sockaddr *)&addr, sizeof(addr)) < 0) {
-	perror("bind");
-	return 1;
+  if (bind(sock, (struct sockaddr *)&msg_data->addr, sizeof(msg_data->addr)) < 0)
+  {
+    perror("bind");
+    return 1;
   }
 
+  return sock;
+}
+
+gui_data_t setup_gui()
+{
+  gui_data_t gui_data;
+
+  if (SDL_Init(SDL_INIT_VIDEO) < 0)
+    {
+      printf("SDL Could not initializes\n");
+      exit(40);
+    }
+    gui_data.window = SDL_CreateWindow("IC Simulator", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT,
+                              SDL_WINDOW_SHOWN);
+    if (gui_data.window == NULL)
+    {
+      printf("Window could not be shown\n");
+    }
+    gui_data.renderer = SDL_CreateRenderer(gui_data.window, -1, 0);
+    gui_data.image = IMG_Load(get_data("ic.png"));
+    gui_data.needle = IMG_Load(get_data("needle.png"));
+    gui_data.sprites = IMG_Load(get_data("spritesheet.png"));
+    gui_data.base_texture = SDL_CreateTextureFromSurface(gui_data.renderer, gui_data.image);
+    gui_data.needle_tex = SDL_CreateTextureFromSurface(gui_data.renderer, gui_data.needle);
+    gui_data.sprite_tex = SDL_CreateTextureFromSurface(gui_data.renderer, gui_data.sprites);
+
+    gui_data.speed_rect.x = 212;
+    gui_data.speed_rect.y = 175;
+    gui_data.speed_rect.h = gui_data.needle->h;
+    gui_data.speed_rect.w = gui_data.needle->w;
+
+    draw_ic(gui_data);
+
+    return gui_data;
+}
+
+void cleanup_gui_data(gui_data_t gui_data)
+{
+    SDL_DestroyTexture(gui_data.base_texture);
+    SDL_DestroyTexture(gui_data.needle_tex);
+    SDL_DestroyTexture(gui_data.sprite_tex);
+    SDL_FreeSurface(gui_data.image);
+    SDL_FreeSurface(gui_data.needle);
+    SDL_FreeSurface(gui_data.sprites);
+    SDL_DestroyRenderer(gui_data.renderer);
+    SDL_DestroyWindow(gui_data.window);
+    IMG_Quit();
+    SDL_Quit();
+}
+
+int main(int argc, char *argv[])
+{
+  char *interface_name = NULL;
+  int sock = -1;
+  msg_data_t msg_data;
+  gui_data_t gui_data = {NULL, NULL, NULL, NULL, NULL, {0, 0, 0, 0}, NULL, NULL, NULL};
+
+  interface_name = parse_arguments(argc, argv);
+  sock = create_can_socket(interface_name, &msg_data);
   init_car_state();
+  gui_data = setup_gui();
+  
+  int running = 1;
+  SDL_Event event;
+  int nbytes, maxdlen;
 
-  door_id = DEFAULT_DOOR_ID;
-  signal_id = DEFAULT_SIGNAL_ID;
-  speed_id = DEFAULT_SPEED_ID;
-
-  if (randomize || seed) {
-	if(randomize) seed = time(NULL);
-	srand(seed);
-	door_id = (rand() % 2046) + 1;
-	signal_id = (rand() % 2046) + 1;
-	speed_id = (rand() % 2046) + 1;
-	door_pos = rand() % 9;
-	signal_pos = rand() % 9;
-	speed_pos = rand() % 8;
-	printf("Seed: %d\n", seed);
-	FILE *fdseed = fopen("/tmp/icsim_seed.txt", "w");
-	fprintf(fdseed, "%d\n", seed);
-	fclose(fdseed);
-  } else if (model) {
-	if (!strncmp(model, "bmw", 3)) {
-		speed_id = MODEL_BMW_X1_SPEED_ID;
-		speed_pos = MODEL_BMW_X1_SPEED_BYTE;
-	} else {
-		printf("Unknown model.  Acceptable models: bmw\n");
-		exit(3);
-	}
-  }
-
-  SDL_Window *window = NULL;
-  if(SDL_Init ( SDL_INIT_VIDEO ) < 0 ) {
-	printf("SDL Could not initializes\n");
-	exit(40);
-  }
-  window = SDL_CreateWindow("IC Simulator", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT,
-                            SDL_WINDOW_SHOWN); // | SDL_WINDOW_RESIZABLE);
-  if(window == NULL) {
-	printf("Window could not be shown\n");
-  }
-  renderer = SDL_CreateRenderer(window, -1, 0);
-  SDL_Surface *image = IMG_Load(get_data("ic.png"));
-  SDL_Surface *needle = IMG_Load(get_data("needle.png"));
-  SDL_Surface *sprites = IMG_Load(get_data("spritesheet.png"));
-  base_texture = SDL_CreateTextureFromSurface(renderer, image);
-  needle_tex = SDL_CreateTextureFromSurface(renderer, needle);
-  sprite_tex = SDL_CreateTextureFromSurface(renderer, sprites);
-
-  speed_rect.x = 212;
-  speed_rect.y = 175;
-  speed_rect.h = needle->h;
-  speed_rect.w = needle->w;
-
-  // Draw the IC
-  redraw_ic();
-
-  /* For now we will just operate on one CAN interface */
-  while(running) {
-    while( SDL_PollEvent(&event) != 0 ) {
-	switch(event.type) {
-	    case SDL_QUIT:
-		running = 0;
-		break;
-	    case SDL_WINDOWEVENT:
-	    switch(event.window.event) {
-		case SDL_WINDOWEVENT_ENTER:
-		case SDL_WINDOWEVENT_RESIZED:
-			redraw_ic();
-		break;
-	    }
-   	}
+  while (running)
+  {
+    while (SDL_PollEvent(&event) != 0)
+    {
+      switch (event.type)
+      {
+      case SDL_QUIT:
+        puts("simulator ended!");
+        running = 0;
+        break;
+      }
       SDL_Delay(3);
     }
 
-      nbytes = recvmsg(can, &msg, 0);
-      if (nbytes < 0) {
-        perror("read");
-        return 1;
-      }  
-      if ((size_t)nbytes == CAN_MTU)
-        maxdlen = CAN_MAX_DLEN;
-      else if ((size_t)nbytes == CANFD_MTU)
-        maxdlen = CANFD_MAX_DLEN;
-      else {
-        fprintf(stderr, "read: incomplete CAN frame\n");
-        return 1;
-      }
-      for (cmsg = CMSG_FIRSTHDR(&msg);
-           cmsg && (cmsg->cmsg_level == SOL_SOCKET);
-           cmsg = CMSG_NXTHDR(&msg,cmsg)) {
-             if (cmsg->cmsg_type == SO_TIMESTAMP) {
-               // struct timeval tv = *(struct timeval *)CMSG_DATA(cmsg);
-             }
-             else if (cmsg->cmsg_type == SO_RXQ_OVFL)
-               //dropcnt[i] = *(__u32 *)CMSG_DATA(cmsg);
-  	     fprintf(stderr, "Dropped packet\n");
-             }
-//      if(debug) fprint_canframe(stdout, &frame, "\n", 0, maxdlen);
-      if(frame.can_id == door_id) update_door_status(&frame, maxdlen);
-      if(frame.can_id == signal_id) update_signal_status(&frame, maxdlen);
-      if(frame.can_id == speed_id) update_speed_status(&frame, maxdlen);
-  }
+    nbytes = recvmsg(sock, &msg_data.msg, 0);
+    if (nbytes < 0)
+    {
+      perror("read");
+      running = 0;
+      break;    
+    }
 
-  SDL_DestroyTexture(base_texture);
-  SDL_DestroyTexture(needle_tex);
-  SDL_DestroyTexture(sprite_tex);
-  SDL_FreeSurface(image);
-  SDL_FreeSurface(needle);
-  SDL_FreeSurface(sprites);
-  SDL_DestroyRenderer(renderer);
-  SDL_DestroyWindow(window);
-  IMG_Quit();
-  SDL_Quit();
+    if ((size_t)nbytes == CAN_MTU)
+      maxdlen = CAN_MAX_DLEN;
+    else if ((size_t)nbytes == CANFD_MTU)
+      maxdlen = CANFD_MAX_DLEN;
+    else
+    {
+      fprintf(stderr, "read: incomplete CAN frame\n");
+      running = 0;
+      break;
+    }
+
+    if (msg_data.frame.can_id == SIGNAL_ID)
+      update_signal_status(&msg_data.frame, maxdlen, gui_data);
+    if (msg_data.frame.can_id == SPEED_ID)
+      update_speed_status(&msg_data.frame, maxdlen, gui_data);
+  }
+  
+  cleanup_gui_data(gui_data);
 
   return 0;
 }

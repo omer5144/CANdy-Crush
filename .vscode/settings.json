@@ -2,7 +2,8 @@
     "files.associations": {
         "signals.h": "c",
         "util.h": "c",
-        "speed.h": "c"
+        "speed.h": "c",
+        "socket.h": "c"
     },
     "C_Cpp.errorSquiggles": "enabled"
 }

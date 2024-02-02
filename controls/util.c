@@ -75,8 +75,8 @@ void cleanup_can_socket(int sock)
 {
 	close(sock);
 }
+
 void cleanup_can_traffic_process()
 {
-	system("pkill canplayer");
+	system("pkill canplayer"); // TODO: kill safely
 }
-
