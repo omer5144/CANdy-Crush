@@ -1,9 +1,9 @@
+#ifndef GUI_H
+#define GUI_H
+
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include "util.h"
-
-#ifndef GUI_H
-#define GUI_H
 
 #define SCREEN_WIDTH 835
 #define SCREEN_HEIGHT 608
