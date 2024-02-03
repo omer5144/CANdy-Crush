@@ -5,16 +5,16 @@
 #include <linux/can/raw.h>
 #include "gui.h"
 
-#define SIGNAL_ID 392
-#define SIGNAL_POS 0
+#define LIGHTS_IS_ON_ID 666
+#define LIGHTS_VOLUME_ID 667
+#define LIGHTS_POS 0
 
-typedef enum
+typedef struct
 {
-  VALUE_LEFT = 1,
-  VALUE_RIGHT = 2,
-  VALUE_BOTH = 3
-} signal_values_t;
+    int is_on;
+    int volume;
+} lights_state_t;
 
-void update_signal_status(struct canfd_frame *cf, int maxdlen, gui_data_t *gui_data);
+void update_lights_status(struct canfd_frame *cf, int maxdlen, lights_state_t *lights_state, gui_data_t *gui_data);
 
 #endif

@@ -38,7 +38,7 @@ void check_accel(int sock, int current_time, speed_state_t *speed_state)
 		case ACCEL_THROTTLE:
 			speed_state->current_speed += rate;
 			if (speed_state->current_speed > MAX_SPEED) // Limiter
-			{ 
+			{
 				speed_state->current_speed = MAX_SPEED;
 			}
 			break;

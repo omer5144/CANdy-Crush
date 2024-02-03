@@ -26,7 +26,7 @@ gui_data_t setup_gui()
 		perror("SDL Could not initializes\n");
 		exit(40);
 	}
-	
+
 	gui_data.window = SDL_CreateWindow("CANBus Control Panel", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
 	if (gui_data.window == NULL)
 	{
@@ -45,7 +45,7 @@ gui_data_t setup_gui()
 
 void cleanup_gui(gui_data_t *gui_data)
 {
-    SDL_DestroyTexture(gui_data->base_texture);
+	SDL_DestroyTexture(gui_data->base_texture);
 	SDL_FreeSurface(gui_data->image);
 	SDL_DestroyRenderer(gui_data->renderer);
 	SDL_DestroyWindow(gui_data->window);

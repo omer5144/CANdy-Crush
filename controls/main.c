@@ -41,7 +41,7 @@ char *parse_arguments(int argc, char *argv[])
 
 	if (optind >= argc)
 		usage("You must specify at least one can device");
-	
+
 	return argv[optind];
 }
 
@@ -93,7 +93,6 @@ void main_loop(gui_data_t *gui_data, int sock)
 				case SDLK_3:
 					lights_state.new_lights = VOLUME_HIGH;
 					break;
-				break;
 				}
 				break;
 			case SDL_KEYUP:
@@ -131,16 +130,16 @@ void cleanup(gui_data_t *gui_data, int sock)
 }
 
 int main(int argc, char *argv[])
-{	
+{
 	char *interface_name = NULL;
 	int sock = -1;
-	gui_data_t gui_data ={NULL, NULL, NULL, NULL};
+	gui_data_t gui_data = {NULL, NULL, NULL, NULL};
 
 	interface_name = parse_arguments(argc, argv);
 	create_can_traffic_process(interface_name);
 	sock = create_can_socket(interface_name);
-	gui_data = setup_gui();	
-	
+	gui_data = setup_gui();
+
 	main_loop(&gui_data, sock);
 	cleanup(&gui_data, sock);
 

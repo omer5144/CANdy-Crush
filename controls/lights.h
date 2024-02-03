@@ -11,19 +11,20 @@
 #define LIGHTS_POS 0
 #define LIGHTS_LEN 8
 
-typedef enum {
+typedef enum
+{
     VOLUME_NONE = 0,
-	VOLUME_LOW = 1,
-	VOLUME_MEDIUM = 2,
-	VOLUME_HIGH = 3
+    VOLUME_LOW = 1,
+    VOLUME_MEDIUM = 2,
+    VOLUME_HIGH = 3
 } lights_volume_t;
 
-typedef struct {
+typedef struct
+{
     int is_on;
     lights_volume_t volume;
     lights_volume_t new_lights;
 } lights_state_t;
-
 
 void check_lights(int sock, lights_state_t *lights_state);
 

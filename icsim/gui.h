@@ -25,6 +25,7 @@ typedef struct
 
 void update_speed(gui_data_t *gui_data, long speed);
 void update_turn_signals(gui_data_t *gui_data, int left_signal, int right_signal);
+void update_lights(gui_data_t *gui_data, int is_on, int volume);
 void draw_ic(gui_data_t *gui_data);
 gui_data_t setup_gui();
 void cleanup_gui_data(gui_data_t *gui_data);

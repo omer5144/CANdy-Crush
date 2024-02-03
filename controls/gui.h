@@ -10,7 +10,8 @@
 
 #define DATA_FILE_SIZE 256
 
-typedef struct {
+typedef struct
+{
 	SDL_Window *window;
 	SDL_Renderer *renderer;
 	SDL_Surface *image;

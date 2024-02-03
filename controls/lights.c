@@ -24,14 +24,15 @@ void send_lights_on(int sock, int is_on)
 
 void check_lights(int sock, lights_state_t *lights_state)
 {
-	if ((!lights_state->new_lights) == lights_state->is_on) {
-		lights_state->is_on = !lights_state->is_on;
-		send_lights_on(sock, lights_state->is_on);
-	}
-	
 	if (lights_state->new_lights && lights_state->new_lights != lights_state->volume)
 	{
 		lights_state->volume = lights_state->new_lights;
 		send_lights_volume(sock, lights_state->volume);
+	}
+
+	if ((!lights_state->new_lights) == lights_state->is_on)
+	{
+		lights_state->is_on = !lights_state->is_on;
+		send_lights_on(sock, lights_state->is_on);
 	}
 }

@@ -1,29 +1,19 @@
 #include "lights.h"
 
-void update_signal_status(struct canfd_frame *cf, int maxdlen, gui_data_t *gui_data)
+void update_lights_status(struct canfd_frame *cf, int maxdlen, lights_state_t *lights_state, gui_data_t *gui_data)
 {
-  int left;
-  int right;
+    int len = (cf->len > maxdlen) ? maxdlen : cf->len;
+    if (len < LIGHTS_POS)
+        return;
 
-  int len = (cf->len > maxdlen) ? maxdlen : cf->len;
-  if (len < SIGNAL_POS)
-    return;
-  if (cf->data[SIGNAL_POS] & VALUE_LEFT)
-  {
-    left = 1;
-  }
-  else
-  {
-    left = 0;
-  }
-  if (cf->data[SIGNAL_POS] & VALUE_RIGHT)
-  {
-    right = 1;
-  }
-  else
-  {
-    right = 0;
-  }
-  update_turn_signals(gui_data, left, right);
-  SDL_RenderPresent(gui_data->renderer);
+    if (cf->can_id == LIGHTS_IS_ON_ID)
+    {
+        lights_state->is_on = cf->data[LIGHTS_POS];
+    } 
+    else if (cf->can_id == LIGHTS_VOLUME_ID)
+    {
+        lights_state->volume = cf->data[LIGHTS_POS];
+    }
+    update_lights(gui_data, lights_state->is_on, lights_state->volume);
+    SDL_RenderPresent(gui_data->renderer);
 }
