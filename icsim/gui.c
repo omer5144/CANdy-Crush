@@ -53,44 +53,26 @@ void draw_speed(gui_data_t *gui_data, speed_status_t *speed_status)
 
 void draw_lights(gui_data_t *gui_data, lights_status_t *lights_status)
 {
-    // SDL_Rect left, right, lpos, rpos;
-    // left.x = 213;
-    // left.y = 51;
-    // left.w = 45;
-    // left.h = 45;
-    // memcpy(&right, &left, sizeof(SDL_Rect));
-    // right.x = 482;
-    // memcpy(&lpos, &left, sizeof(SDL_Rect));
-    // memcpy(&rpos, &right, sizeof(SDL_Rect));
-    // lpos.x -= 22;
-    // lpos.y -= 22;
-    // rpos.x -= 22;
-    // rpos.y -= 22;
+    SDL_Texture *texture = NULL;
 
     if (lights_status->is_on)
     {
-        //printf("volume: %d\n", lights_status->volume);
+        switch(lights_status->volume)
+        {
+            case 1:
+                texture = gui_data->low_light_tex;
+                break;
+            case 2:
+                texture = gui_data->medium_light_tex;
+                break;
+            case 3:
+                texture = gui_data->high_light_tex;
+                break;
+        }
+
+        SDL_RenderCopy(gui_data->renderer, texture, NULL, &gui_data->left_light_rect);
+        SDL_RenderCopy(gui_data->renderer, texture, NULL, &gui_data->right_light_rect);
     }
-    else
-    {
-        //puts("close");
-    }
-    // if (left_signal == 0)
-    // {
-    //   SDL_RenderCopy(gui_data->renderer, gui_data->base_texture, &lpos, &lpos);
-    // }
-    // else
-    // {
-    //   SDL_RenderCopy(gui_data->renderer, gui_data->sprite_tex, &left, &lpos);
-    // }
-    // if (right_signal == 0)
-    // {
-    //   SDL_RenderCopy(gui_data->renderer, gui_data->base_texture, &rpos, &rpos);
-    // }
-    // else
-    // {
-    //   SDL_RenderCopy(gui_data->renderer, gui_data->sprite_tex, &right, &rpos);
-    // }
 }
 
 void draw(gui_data_t *gui_data, signals_status_t *signal_status, speed_status_t *speed_status, lights_status_t *lights_status)
@@ -108,7 +90,7 @@ gui_data_t setup_gui()
 {
     gui_data_t gui_data;
     char data_file[DATA_FILE_SIZE];
-    SDL_Surface *dashboard, *needle, *off_left_signal, *off_right_signal, *on_left_signal, *on_right_signal;
+    SDL_Surface *dashboard, *needle, *off_left_signal, *off_right_signal, *on_left_signal, *on_right_signal, *low_light, *medium_light, *high_light;
     
     if (SDL_Init(SDL_INIT_VIDEO) < 0)
     {
@@ -142,7 +124,11 @@ gui_data_t setup_gui()
     off_right_signal = IMG_Load(get_data("off_right_signal.png", data_file));
     on_left_signal = IMG_Load(get_data("on_left_signal.png", data_file));
     on_right_signal = IMG_Load(get_data("on_right_signal.png", data_file));
-    if (dashboard == NULL || needle == NULL || off_left_signal == NULL || off_right_signal == NULL || on_left_signal == NULL || on_right_signal == NULL)
+    low_light = IMG_Load(get_data("low_light.png", data_file));
+    medium_light = IMG_Load(get_data("medium_light.png", data_file));
+    high_light = IMG_Load(get_data("high_light.png", data_file));
+    if (dashboard == NULL || needle == NULL || off_left_signal == NULL || off_right_signal == NULL || on_left_signal == NULL || on_right_signal == NULL ||
+        low_light == NULL || medium_light == NULL || high_light == NULL)
     {
         perror("IMG_Load");
         goto error;
@@ -154,8 +140,13 @@ gui_data_t setup_gui()
     gui_data.off_right_signal_tex = SDL_CreateTextureFromSurface(gui_data.renderer, off_right_signal);
     gui_data.on_left_signal_tex = SDL_CreateTextureFromSurface(gui_data.renderer, on_left_signal);
     gui_data.on_right_signal_tex = SDL_CreateTextureFromSurface(gui_data.renderer, on_right_signal);
+    gui_data.low_light_tex = SDL_CreateTextureFromSurface(gui_data.renderer, low_light);
+    gui_data.medium_light_tex = SDL_CreateTextureFromSurface(gui_data.renderer, medium_light);
+    gui_data.high_light_tex = SDL_CreateTextureFromSurface(gui_data.renderer, high_light);
+
     if (gui_data.dashboard_tex == NULL || gui_data.needle_tex == NULL || gui_data.off_left_signal_tex == NULL ||
-        gui_data.off_right_signal_tex == NULL || gui_data.on_left_signal_tex == NULL || gui_data.on_right_signal_tex == NULL)
+        gui_data.off_right_signal_tex == NULL || gui_data.on_left_signal_tex == NULL || gui_data.on_right_signal_tex == NULL ||
+        gui_data.low_light_tex == NULL || gui_data.medium_light_tex == NULL || gui_data.high_light_tex == NULL)
     {
         perror("SDL_CreateTextureFromSurface");
         goto error;
@@ -175,6 +166,14 @@ gui_data_t setup_gui()
     gui_data.right_signal_rect.y = SCREEN_HEIGHT * 0.1;
     gui_data.right_signal_rect.w = off_right_signal->w / 2;
     gui_data.right_signal_rect.h = off_right_signal->h / 2;
+    gui_data.left_light_rect.x = SCREEN_WIDTH * 0.075;
+    gui_data.left_light_rect.y = SCREEN_HEIGHT * 0.3;
+    gui_data.left_light_rect.w = low_light->w / 2;
+    gui_data.left_light_rect.h = low_light->h / 2;
+    gui_data.right_light_rect.x = SCREEN_WIDTH * 0.925 - gui_data.left_light_rect.w;
+    gui_data.right_light_rect.y = SCREEN_HEIGHT * 0.3;
+    gui_data.right_light_rect.w = low_light->w / 2;
+    gui_data.right_light_rect.h = low_light->h / 2;
 
     SDL_FreeSurface(dashboard);
     SDL_FreeSurface(needle);
@@ -201,6 +200,9 @@ void cleanup_gui(gui_data_t *gui_data)
     SDL_DestroyTexture(gui_data->off_right_signal_tex);
     SDL_DestroyTexture(gui_data->on_left_signal_tex);
     SDL_DestroyTexture(gui_data->on_right_signal_tex);
+    SDL_DestroyTexture(gui_data->low_light_tex);
+    SDL_DestroyTexture(gui_data->medium_light_tex);
+    SDL_DestroyTexture(gui_data->high_light_tex);
 
     SDL_DestroyRenderer(gui_data->renderer);
     SDL_DestroyWindow(gui_data->window);
