@@ -75,7 +75,7 @@ int main(int argc, char *argv[])
                 running = 0;
                 break;
             }
-            SDL_Delay(16);
+            SDL_Delay(5);
         }
 
         nbytes = recvmsg(sock, &msg_data.msg, 0);

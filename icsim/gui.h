@@ -10,8 +10,8 @@
 #define DATA_DIR "./data/"
 #define DATA_FILE_SIZE 256
 
-#define SCREEN_WIDTH 692
-#define SCREEN_HEIGHT 329
+#define SCREEN_WIDTH 990
+#define SCREEN_HEIGHT 545
 
 typedef struct
 {

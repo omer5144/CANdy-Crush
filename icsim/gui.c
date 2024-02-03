@@ -19,8 +19,8 @@ void update_speed(gui_data_t *gui_data, speed_status_t *speed_status)
     SDL_Point center;
     double angle = 0;
 
-    center.x = 135;
-    center.y = 20;
+    center.x = 217;
+    center.y = gui_data->speed_rect.h / 2;
     angle = map(speed_status->speed, 0, 280, 0, 180);
     if (angle < 0)
         angle = 0;
@@ -108,24 +108,24 @@ gui_data_t setup_gui()
         printf("SDL Could not initializes\n");
         exit(40);
     }
-    gui_data.window = SDL_CreateWindow("IC Simulator", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT,
+    gui_data.window = SDL_CreateWindow("ARAMobile", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT,
                                        SDL_WINDOW_SHOWN);
     if (gui_data.window == NULL)
     {
         printf("Window could not be shown\n");
     }
     gui_data.renderer = SDL_CreateRenderer(gui_data.window, -1, 0);
-    gui_data.image = IMG_Load(get_data("ic.png", data_file));
+    gui_data.image = IMG_Load(get_data("dashboard.png", data_file));
     gui_data.needle = IMG_Load(get_data("needle.png", data_file));
     gui_data.sprites = IMG_Load(get_data("spritesheet.png", data_file));
     gui_data.base_texture = SDL_CreateTextureFromSurface(gui_data.renderer, gui_data.image);
     gui_data.needle_tex = SDL_CreateTextureFromSurface(gui_data.renderer, gui_data.needle);
     gui_data.sprite_tex = SDL_CreateTextureFromSurface(gui_data.renderer, gui_data.sprites);
 
-    gui_data.speed_rect.x = 212;
-    gui_data.speed_rect.y = 175;
-    gui_data.speed_rect.h = gui_data.needle->h;
-    gui_data.speed_rect.w = gui_data.needle->w;
+    gui_data.speed_rect.x = 285;
+    gui_data.speed_rect.y = 373;
+    gui_data.speed_rect.h = gui_data.needle->h / 2;
+    gui_data.speed_rect.w = gui_data.needle->w / 2;
 
     return gui_data;
 }
