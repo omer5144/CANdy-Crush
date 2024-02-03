@@ -19,11 +19,17 @@ typedef struct
   SDL_Renderer *renderer;
   SDL_Texture *base_texture;
   SDL_Texture *needle_tex;
-  SDL_Texture *sprite_tex;
+  SDL_Texture *off_left_signal_tex;
+  SDL_Texture *on_left_signal_tex;
+  SDL_Texture *off_right_signal_tex;
+  SDL_Texture *on_right_signal_tex;
   SDL_Rect speed_rect;
   SDL_Surface *image;
   SDL_Surface *needle;
-  SDL_Surface *sprites;
+  SDL_Surface *off_left_signal;
+  SDL_Surface *on_left_signal;
+  SDL_Surface *off_right_signal;
+  SDL_Surface *on_right_signal;
 } gui_data_t;
 
 gui_data_t setup_gui();

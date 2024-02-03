@@ -31,18 +31,26 @@ void update_speed(gui_data_t *gui_data, speed_status_t *speed_status)
 
 void update_turn_signals(gui_data_t *gui_data, signal_status_t *signal_status)
 {
-    SDL_Rect left = {213, 51, 45, 45};
-    SDL_Rect right = {482, 51, 45, 45};
-    SDL_Rect lpos = {191, 29, 45, 45};
-    SDL_Rect rpos = {460, 29, 45, 45};
+    SDL_Rect left = {213, 51, 70, 70};
+    SDL_Rect right = {482, 51, 70, 70};
+    SDL_Rect lpos = {191, 29, 70, 70};
+    SDL_Rect rpos = {460, 29, 70, 70};
     
     if (signal_status->left)
     {
-        SDL_RenderCopy(gui_data->renderer, gui_data->sprite_tex, &left, &lpos);
+        SDL_RenderCopy(gui_data->renderer, gui_data->on_left_signal_tex, NULL, &lpos);
+    }
+    else
+    {
+        SDL_RenderCopy(gui_data->renderer, gui_data->off_left_signal_tex, NULL, &lpos);
     }
     if (signal_status->right)
     {
-        SDL_RenderCopy(gui_data->renderer, gui_data->sprite_tex, &right, &rpos);
+        SDL_RenderCopy(gui_data->renderer, gui_data->on_right_signal_tex, NULL, &rpos);
+    }
+    else
+    {
+        SDL_RenderCopy(gui_data->renderer, gui_data->off_right_signal_tex, NULL, &rpos);
     }
 }
 
@@ -117,10 +125,16 @@ gui_data_t setup_gui()
     gui_data.renderer = SDL_CreateRenderer(gui_data.window, -1, 0);
     gui_data.image = IMG_Load(get_data("dashboard.png", data_file));
     gui_data.needle = IMG_Load(get_data("needle.png", data_file));
-    gui_data.sprites = IMG_Load(get_data("spritesheet.png", data_file));
+    gui_data.off_left_signal = IMG_Load(get_data("off_left_signal.png", data_file));
+    gui_data.off_right_signal = IMG_Load(get_data("off_right_signal.png", data_file));
+    gui_data.on_left_signal = IMG_Load(get_data("on_left_signal.png", data_file));
+    gui_data.on_right_signal = IMG_Load(get_data("on_right_signal.png", data_file));
     gui_data.base_texture = SDL_CreateTextureFromSurface(gui_data.renderer, gui_data.image);
     gui_data.needle_tex = SDL_CreateTextureFromSurface(gui_data.renderer, gui_data.needle);
-    gui_data.sprite_tex = SDL_CreateTextureFromSurface(gui_data.renderer, gui_data.sprites);
+    gui_data.off_left_signal_tex = SDL_CreateTextureFromSurface(gui_data.renderer, gui_data.off_left_signal);
+    gui_data.off_right_signal_tex = SDL_CreateTextureFromSurface(gui_data.renderer, gui_data.off_right_signal);
+    gui_data.on_left_signal_tex = SDL_CreateTextureFromSurface(gui_data.renderer, gui_data.on_left_signal);
+    gui_data.on_right_signal_tex = SDL_CreateTextureFromSurface(gui_data.renderer, gui_data.on_right_signal);
 
     gui_data.speed_rect.x = 285;
     gui_data.speed_rect.y = 373;
@@ -134,10 +148,16 @@ void cleanup_gui_data(gui_data_t *gui_data)
 {
     SDL_DestroyTexture(gui_data->base_texture);
     SDL_DestroyTexture(gui_data->needle_tex);
-    SDL_DestroyTexture(gui_data->sprite_tex);
+    SDL_DestroyTexture(gui_data->off_left_signal_tex);
+    SDL_DestroyTexture(gui_data->off_right_signal_tex);
+    SDL_DestroyTexture(gui_data->on_left_signal_tex);
+    SDL_DestroyTexture(gui_data->on_right_signal_tex);
     SDL_FreeSurface(gui_data->image);
     SDL_FreeSurface(gui_data->needle);
-    SDL_FreeSurface(gui_data->sprites);
+    SDL_FreeSurface(gui_data->off_left_signal);
+    SDL_FreeSurface(gui_data->off_right_signal);
+    SDL_FreeSurface(gui_data->on_left_signal);
+    SDL_FreeSurface(gui_data->on_right_signal);
     SDL_DestroyRenderer(gui_data->renderer);
     SDL_DestroyWindow(gui_data->window);
     IMG_Quit();

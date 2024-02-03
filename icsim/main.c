@@ -50,7 +50,7 @@ int main(int argc, char *argv[])
     char *interface_name = NULL;
     int sock = -1;
     msg_data_t msg_data;
-    gui_data_t gui_data = {NULL, NULL, NULL, NULL, NULL, {0, 0, 0, 0}, NULL, NULL, NULL};
+    gui_data_t gui_data = {NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, {0, 0, 0, 0}, NULL, NULL, NULL, NULL, NULL, NULL};
     signal_status_t signal_status = {0, 0};
     speed_status_t speed_status = {0};
     lights_status_t lights_status = {0, 0};
