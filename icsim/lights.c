@@ -1,6 +1,6 @@
 #include "lights.h"
 
-void update_lights_status(struct canfd_frame *cf, int maxdlen, lights_status_t *lights_status)
+void update_lights(struct canfd_frame *cf, int maxdlen, lights_status_t *lights_status)
 {
     int len = (cf->len > maxdlen) ? maxdlen : cf->len;
     if (len < LIGHTS_POS)

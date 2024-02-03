@@ -1,6 +1,6 @@
 #include "speed.h"
 
-void update_speed_status(struct canfd_frame *cf, int maxdlen, speed_status_t *speed_status)
+void update_speed(struct canfd_frame *cf, int maxdlen, speed_status_t *speed_status)
 {
     int len = (cf->len > maxdlen) ? maxdlen : cf->len;
     if (len < SPEED_POS + 1)

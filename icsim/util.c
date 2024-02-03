@@ -9,18 +9,17 @@ int create_can_socket(char *interface_name, msg_data_t *msg_data)
     sock = socket(PF_CAN, SOCK_RAW, CAN_RAW);
     if (sock < 0)
     {
-        perror("Couldn't create raw socket");
-        exit(1);
+        perror("socket");
+        goto error;
     }
 
     msg_data->addr.can_family = AF_CAN;
     memset(&ifr.ifr_name, 0, sizeof(ifr.ifr_name));
     strncpy(ifr.ifr_name, interface_name, strlen(interface_name));
-    printf("Using CAN interface %s\n", ifr.ifr_name);
     if (ioctl(sock, SIOCGIFINDEX, &ifr) < 0)
     {
-        perror("SIOCGIFINDEX");
-        exit(1);
+        perror("ioctl - SIOCGIFINDEX");
+        goto error;
     }
     msg_data->addr.can_ifindex = ifr.ifr_ifindex;
     setsockopt(sock, SOL_CAN_RAW, CAN_RAW_FD_FRAMES, &canfd_on, sizeof(canfd_on));
@@ -38,8 +37,15 @@ int create_can_socket(char *interface_name, msg_data_t *msg_data)
     if (bind(sock, (struct sockaddr *)&msg_data->addr, sizeof(msg_data->addr)) < 0)
     {
         perror("bind");
-        return 1;
+        goto error;
     }
 
+    goto success;
+
+error:
+    close(sock);
+    sock = -1;
+
+success:
     return sock;
 }

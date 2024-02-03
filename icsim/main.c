@@ -11,7 +11,7 @@
 #include <linux/can/raw.h>
 #include "util.h"
 #include "gui.h"
-#include "signal.h"
+#include "signals.h"
 #include "speed.h"
 #include "lights.h"
 
@@ -48,16 +48,20 @@ char *parse_arguments(int argc, char *argv[])
 int main(int argc, char *argv[])
 {
     char *interface_name = NULL;
+    gui_data_t gui_data;
     int sock = -1;
     msg_data_t msg_data;
-    gui_data_t gui_data = {NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, {0, 0, 0, 0}, NULL, NULL, NULL, NULL, NULL, NULL};
-    signal_status_t signal_status = {0, 0};
+    signals_status_t signal_status = {0, 0};
     speed_status_t speed_status = {0};
     lights_status_t lights_status = {0, 0};
 
     interface_name = parse_arguments(argc, argv);
-    sock = create_can_socket(interface_name, &msg_data);
     gui_data = setup_gui();
+    sock = create_can_socket(interface_name, &msg_data);
+    if (sock < 0)
+    {
+        exit(1);
+    }
 
     int running = 1;
     SDL_Event event;
@@ -71,9 +75,8 @@ int main(int argc, char *argv[])
             switch (event.type)
             {
             case SDL_QUIT:
-                puts("simulator ended!");
                 running = 0;
-                break;
+                goto cleanup;
             }
             SDL_Delay(5);
         }
@@ -81,9 +84,9 @@ int main(int argc, char *argv[])
         nbytes = recvmsg(sock, &msg_data.msg, 0);
         if (nbytes < 0)
         {
-            perror("read");
+            fprintf(stderr, "read failed\n");
             running = 0;
-            break;
+            goto cleanup;
         }
 
         if ((size_t)nbytes == CAN_MTU)
@@ -105,14 +108,14 @@ int main(int argc, char *argv[])
         switch (msg_data.frame.can_id)
         {
         case SIGNAL_ID:
-            update_signal_status(&msg_data.frame, maxdlen, &signal_status);
+            update_signals(&msg_data.frame, maxdlen, &signal_status);
             break;
         case SPEED_ID:
-            update_speed_status(&msg_data.frame, maxdlen, &speed_status);
+            update_speed(&msg_data.frame, maxdlen, &speed_status);
             break;
         case LIGHTS_IS_ON_ID:
         case LIGHTS_VOLUME_ID:
-            update_lights_status(&msg_data.frame, maxdlen, &lights_status);
+            update_lights(&msg_data.frame, maxdlen, &lights_status);
             break;
         default:
             is_changed = 0;
@@ -124,7 +127,9 @@ int main(int argc, char *argv[])
         }
     }
 
-    cleanup_gui_data(&gui_data);
+cleanup:
+    cleanup_gui(&gui_data);
+    close(sock);
 
     return 0;
 }

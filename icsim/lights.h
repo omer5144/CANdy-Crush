@@ -14,6 +14,6 @@ typedef struct
     int volume;
 } lights_status_t;
 
-void update_lights_status(struct canfd_frame *cf, int maxdlen, lights_status_t *lights_status);
+void update_lights(struct canfd_frame *cf, int maxdlen, lights_status_t *lights_status);
 
 #endif
