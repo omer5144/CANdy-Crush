@@ -13,6 +13,11 @@ void send_speed(int sock, int speed)
 		cf.data[DEFAULT_SPEED_POS] = 1;
 		cf.data[DEFAULT_SPEED_POS + 1] = rand() % 255 + 100;
 	}
+	else if (speed == MAX_SPEED)
+	{
+		cf.data[DEFAULT_SPEED_POS] = (char)(kph >> 8) & 0xff;
+		cf.data[DEFAULT_SPEED_POS + 1] = rand() % 255 + 100;
+	}
 	else
 	{
 		cf.data[DEFAULT_SPEED_POS] = (char)(kph >> 8) & 0xff;

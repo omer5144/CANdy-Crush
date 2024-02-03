@@ -3,7 +3,6 @@
 
 #include <linux/can.h>
 #include <linux/can/raw.h>
-#include "gui.h"
 
 #define SIGNAL_ID 392
 #define SIGNAL_POS 0
@@ -15,6 +14,12 @@ typedef enum
     VALUE_BOTH = 3
 } signal_values_t;
 
-void update_signal_status(struct canfd_frame *cf, int maxdlen, gui_data_t *gui_data);
+typedef struct
+{
+    int left;
+    int right;
+} signal_status_t;
+
+void update_signal_status(struct canfd_frame *cf, int maxdlen, signal_status_t *signal_status);
 
 #endif

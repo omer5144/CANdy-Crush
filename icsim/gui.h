@@ -3,6 +3,9 @@
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include "signal.h"
+#include "speed.h"
+#include "lights.h"
 
 #define DATA_DIR "./data/"
 #define DATA_FILE_SIZE 256
@@ -23,11 +26,8 @@ typedef struct
   SDL_Surface *sprites;
 } gui_data_t;
 
-void update_speed(gui_data_t *gui_data, long speed);
-void update_turn_signals(gui_data_t *gui_data, int left_signal, int right_signal);
-void update_lights(gui_data_t *gui_data, int is_on, int volume);
-void draw_ic(gui_data_t *gui_data);
 gui_data_t setup_gui();
+void draw(gui_data_t *gui_data, signal_status_t *signal_status, speed_status_t *speed_status, lights_status_t *lights_status);
 void cleanup_gui_data(gui_data_t *gui_data);
 
 #endif
