@@ -1,9 +1,9 @@
 #include "gui.h"
 
-void redraw_screen(SDL_Texture *base_texture, SDL_Renderer *renderer)
+void redraw_screen(gui_data_t *gui_data)
 {
-	SDL_RenderCopy(renderer, base_texture, NULL, NULL);
-	SDL_RenderPresent(renderer);
+	SDL_RenderCopy(gui_data->renderer, gui_data->base_texture, NULL, NULL);
+	SDL_RenderPresent(gui_data->renderer);
 }
 
 char *get_data(char *fname, char *data_file)
@@ -43,11 +43,11 @@ gui_data_t setup_gui()
 	return gui_data;
 }
 
-void cleanup_gui(gui_data_t gui_data)
+void cleanup_gui(gui_data_t *gui_data)
 {
-    SDL_DestroyTexture(gui_data.base_texture);
-	SDL_FreeSurface(gui_data.image);
-	SDL_DestroyRenderer(gui_data.renderer);
-	SDL_DestroyWindow(gui_data.window);
+    SDL_DestroyTexture(gui_data->base_texture);
+	SDL_FreeSurface(gui_data->image);
+	SDL_DestroyRenderer(gui_data->renderer);
+	SDL_DestroyWindow(gui_data->window);
 	SDL_Quit();
 }

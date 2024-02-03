@@ -8,7 +8,7 @@ void send_lights_volume(int sock, lights_volume_t volume)
 	cf.can_id = LIGHTS_VOLUME_ID;
 	cf.len = LIGHTS_LEN;
 	cf.data[LIGHTS_POS] = volume;
-	send_pkt(CAN_MTU, cf, sock);
+	send_pkt(CAN_MTU, &cf, sock);
 }
 
 void send_lights_on(int sock, int is_on)
@@ -19,7 +19,7 @@ void send_lights_on(int sock, int is_on)
 	cf.can_id = LIGHTS_IS_ON_ID;
 	cf.len = LIGHTS_LEN;
 	cf.data[LIGHTS_POS] = is_on;
-	send_pkt(CAN_MTU, cf, sock);
+	send_pkt(CAN_MTU, &cf, sock);
 }
 
 void check_lights(int sock, lights_state_t *lights_state)

@@ -54,7 +54,8 @@ int main(int argc, char *argv[])
   interface_name = parse_arguments(argc, argv);
   sock = create_can_socket(interface_name, &msg_data);
   gui_data = setup_gui();
-  
+  draw_ic(&gui_data);
+
   int running = 1;
   SDL_Event event;
   int nbytes, maxdlen;
@@ -93,12 +94,12 @@ int main(int argc, char *argv[])
     }
 
     if (msg_data.frame.can_id == SIGNAL_ID)
-      update_signal_status(&msg_data.frame, maxdlen, gui_data);
+      update_signal_status(&msg_data.frame, maxdlen, &gui_data);
     if (msg_data.frame.can_id == SPEED_ID)
-      update_speed_status(&msg_data.frame, maxdlen, gui_data);
+      update_speed_status(&msg_data.frame, maxdlen, &gui_data);
   }
   
-  cleanup_gui_data(gui_data);
+  cleanup_gui_data(&gui_data);
 
   return 0;
 }

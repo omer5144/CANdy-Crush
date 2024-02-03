@@ -17,8 +17,8 @@ typedef struct {
 	SDL_Texture *base_texture;
 } gui_data_t;
 
-void redraw_screen(SDL_Texture *base_texture, SDL_Renderer *renderer);
+void redraw_screen(gui_data_t *gui_data);
 gui_data_t setup_gui();
-void cleanup_gui(gui_data_t gui_data);
+void cleanup_gui(gui_data_t *gui_data);
 
 #endif

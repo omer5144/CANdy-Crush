@@ -63,9 +63,9 @@ int create_can_socket(char *interface_name)
 	return sock;
 }
 
-void send_pkt(int mtu, struct canfd_frame cf, int sock)
+void send_pkt(int mtu, struct canfd_frame *cf, int sock)
 {
-	if (write(sock, &cf, mtu) != mtu)
+	if (write(sock, cf, mtu) != mtu)
 	{
 		perror("write");
 	}

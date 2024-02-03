@@ -45,7 +45,7 @@ char *parse_arguments(int argc, char *argv[])
 	return argv[optind];
 }
 
-void main_loop(gui_data_t gui_data, int sock)
+void main_loop(gui_data_t *gui_data, int sock)
 {
 	int running = 1;
 	SDL_Event event;
@@ -68,7 +68,7 @@ void main_loop(gui_data_t gui_data, int sock)
 				{
 				case SDL_WINDOWEVENT_ENTER:
 				case SDL_WINDOWEVENT_RESIZED:
-					redraw_screen(gui_data.base_texture, gui_data.renderer);
+					redraw_screen(gui_data);
 					break;
 				}
 				break;
@@ -123,7 +123,7 @@ void main_loop(gui_data_t gui_data, int sock)
 	}
 }
 
-void cleanup(gui_data_t gui_data, int sock)
+void cleanup(gui_data_t *gui_data, int sock)
 {
 	cleanup_can_socket(sock);
 	cleanup_gui(gui_data);
@@ -141,8 +141,8 @@ int main(int argc, char *argv[])
 	sock = create_can_socket(interface_name);
 	gui_data = setup_gui();	
 	
-	main_loop(gui_data, sock);
-	cleanup(gui_data, sock);
+	main_loop(&gui_data, sock);
+	cleanup(&gui_data, sock);
 
 	return 0;
 }

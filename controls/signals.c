@@ -8,7 +8,7 @@ void send_turn_signal(int sock, signal_t signal)
 	cf.can_id = SIGNAL_ID;
 	cf.len = SIGNAL_LEN;
 	cf.data[SIGNAL_POS] = signal;
-	send_pkt(CAN_MTU, cf, sock);
+	send_pkt(CAN_MTU, &cf, sock);
 }
 
 

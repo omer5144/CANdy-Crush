@@ -18,7 +18,7 @@ void send_speed(int sock, int speed)
 		cf.data[DEFAULT_SPEED_POS] = (char)(kph >> 8) & 0xff;
 		cf.data[DEFAULT_SPEED_POS + 1] = (char)kph & 0xff;
 	}
-	send_pkt(CAN_MTU, cf, sock);
+	send_pkt(CAN_MTU, &cf, sock);
 }
 
 void check_accel(int sock, int current_time, speed_state_t *speed_state)
