@@ -6,7 +6,7 @@
 #include <string.h>
 #include <inttypes.h>
 
-#define RADIO_ID 0x777
+#define RADIO_ID 555
 #define RADIO_TYPE_POS 0
 #define RADIO_STATION_POS 2
 
