@@ -5,25 +5,26 @@
 #include <linux/can/raw.h>
 #include <string.h>
 #include <inttypes.h>
+#include "util.h"
 
 #define RADIO_ID 0x777
 #define RADIO_TYPE_POS 0
 #define RADIO_STATION_POS 2
+#define RADIO_LEN 8
 
 typedef enum
 {
-    RADIO_OTHER,
-    RADIO_FM,
-    RADIO_AM
+	RADIO_FM = 0,
+	RADIO_AM = 1,
 } radio_type_t;
 
 typedef struct
 {
-    uint8_t station;
-    radio_type_t radio_type;
-    char *song_name;
-} radio_status_t;
+	radio_type_t radio_type;
+	uint8_t station;
+	int last_update_time;
+} radio_state_t;
 
-void update_radio(struct canfd_frame *cf, int maxdlen, radio_status_t *radio_status, char *songs[]);
+void check_radio(int sock, int current_time, radio_state_t *radio_state);
 
 #endif

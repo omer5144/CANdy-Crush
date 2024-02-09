@@ -57,6 +57,27 @@ int main(int argc, char *argv[])
     lights_status_t lights_status = {0, 0};
     radio_status_t radio_status = {0, RADIO_OTHER, "----------"};
 
+    char *songs[] = {"Sugar, Sugar",
+                    "Candy",
+                    "Candyman",
+                    "Lollipop",
+                    "I Want Candy",
+                    "Candy Shop",
+                    "Candy Everybody Wants",
+                    "Candy Kisses",
+                    "Candy Says",
+                    "Candy Girl",
+                    "Candy Rain",
+                    "Cotton Candy",
+                    "Candy Store Rock",
+                    "Rock Candy",
+                    "Candy Walls",
+                    "Candy's Room",
+                    "Candy-O",
+                    "Candy Perfume Girl",
+                    "Candy's Going Bad",
+                    "Candyman Blues"};
+
     interface_name = parse_arguments(argc, argv);
     gui_data = setup_gui();
     sock = create_can_socket(interface_name, &msg_data);
@@ -118,6 +139,9 @@ int main(int argc, char *argv[])
         case LIGHTS_IS_ON_ID:
         case LIGHTS_VOLUME_ID:
             update_lights(&msg_data.frame, maxdlen, &lights_status);
+            break;
+        case RADIO_ID:
+            update_radio(&msg_data.frame, maxdlen, &radio_status, songs);
             break;
         default:
             is_changed = 0;

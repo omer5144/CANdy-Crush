@@ -1,5 +1,7 @@
 #include <linux/can.h>
 #include <linux/can/raw.h>
+#include <time.h>
+#include <stdlib.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -14,6 +16,7 @@
 #include "signals.h"
 #include "speed.h"
 #include "lights.h"
+#include "radio.h"
 #include "gui.h"
 
 void usage(char *msg)
@@ -45,6 +48,18 @@ char *parse_arguments(int argc, char *argv[])
 	return argv[optind];
 }
 
+radio_state_t generate_random_radio()
+{
+	radio_state_t radio_state;
+
+	srand(time(NULL));
+	radio_state.last_update_time = 0;
+	radio_state.radio_type = rand() % 2;
+	radio_state.station = (rand() % 20) + 90;
+
+	return radio_state;
+}
+
 void main_loop(gui_data_t *gui_data, int sock)
 {
 	int running = 1;
@@ -52,6 +67,8 @@ void main_loop(gui_data_t *gui_data, int sock)
 	speed_state_t speed_state = {0, 0, 0};
 	signal_state_t signal_state = {0, 0, 0};
 	lights_state_t lights_state = {0, VOLUME_NONE, VOLUME_NONE};
+	radio_state_t radio_state = generate_random_radio();
+
 	int current_time;
 
 	while (running)
@@ -118,6 +135,7 @@ void main_loop(gui_data_t *gui_data, int sock)
 		check_accel(sock, current_time, &speed_state);
 		check_turn_signal(sock, current_time, &signal_state);
 		check_lights(sock, &lights_state);
+		check_radio(sock, current_time, &radio_state);
 		SDL_Delay(5);
 	}
 }
