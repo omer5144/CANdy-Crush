@@ -10,6 +10,7 @@ void send_radio(int sock, radio_type_t radio_type, uint8_t station)
 	cf.data[RADIO_TYPE_POS] = (radio_type == RADIO_FM) ? 'F' : 'A';
 	cf.data[RADIO_TYPE_POS + 1] = 'M';
 	cf.data[RADIO_STATION_POS] = station;
+	cf.data[RADIO_LEN - 1] = rand() % 256;
 	send_pkt(CAN_MTU, &cf, sock);
 }
 
