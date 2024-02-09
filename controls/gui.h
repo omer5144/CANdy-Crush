@@ -5,8 +5,8 @@
 #include <SDL2/SDL_image.h>
 #include "util.h"
 
-#define SCREEN_WIDTH 835
-#define SCREEN_HEIGHT 608
+#define SCREEN_WIDTH 909
+#define SCREEN_HEIGHT 454
 
 #define DATA_FILE_SIZE 256
 

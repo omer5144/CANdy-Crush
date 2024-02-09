@@ -27,7 +27,7 @@ gui_data_t setup_gui()
 		exit(40);
 	}
 
-	gui_data.window = SDL_CreateWindow("CANBus Control Panel", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
+	gui_data.window = SDL_CreateWindow("CANBus Control Panel", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
 	if (gui_data.window == NULL)
 	{
 		perror("Window could not be shown\n");
@@ -35,7 +35,7 @@ gui_data_t setup_gui()
 	}
 
 	gui_data.renderer = SDL_CreateRenderer(gui_data.window, -1, 0);
-	gui_data.image = IMG_Load(get_data("joypad.png", data_file));
+	gui_data.image = IMG_Load(get_data("keyboard_tutorial.png", data_file));
 	gui_data.base_texture = SDL_CreateTextureFromSurface(gui_data.renderer, gui_data.image);
 	SDL_RenderCopy(gui_data.renderer, gui_data.base_texture, NULL, NULL);
 	SDL_RenderPresent(gui_data.renderer);

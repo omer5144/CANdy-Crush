@@ -13,7 +13,7 @@
 #define DATA_FILE_SIZE 2048
 
 #define SCREEN_WIDTH 990
-#define SCREEN_HEIGHT 545
+#define SCREEN_HEIGHT 468
 
 typedef struct
 {
