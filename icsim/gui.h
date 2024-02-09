@@ -3,9 +3,11 @@
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include <SDL2/SDL_ttf.h>
 #include "signals.h"
 #include "speed.h"
 #include "lights.h"
+#include "radio.h"
 
 #define DATA_DIR "./data/"
 #define DATA_FILE_SIZE 2048
@@ -32,10 +34,14 @@ typedef struct
   SDL_Rect right_signal_rect;
   SDL_Rect left_light_rect;
   SDL_Rect right_light_rect;
+  TTF_Font *font_big;
+  TTF_Font *font_small;
+  SDL_Rect radio_frame_rect;
+  SDL_Rect radio_data_rect;
 } gui_data_t;
 
 gui_data_t setup_gui();
-void draw(gui_data_t *gui_data, signals_status_t *signal_status, speed_status_t *speed_status, lights_status_t *lights_status);
+void draw(gui_data_t *gui_data, signals_status_t *signal_status, speed_status_t *speed_status, lights_status_t *lights_status, radio_status_t *radio_status);
 void cleanup_gui(gui_data_t *gui_data);
 
 #endif

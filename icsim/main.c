@@ -14,6 +14,7 @@
 #include "signals.h"
 #include "speed.h"
 #include "lights.h"
+#include "radio.h"
 
 void Usage(char *msg)
 {
@@ -54,6 +55,7 @@ int main(int argc, char *argv[])
     signals_status_t signal_status = {0, 0};
     speed_status_t speed_status = {0};
     lights_status_t lights_status = {0, 0};
+    radio_status_t radio_status = {0, RADIO_OTHER, "----------"};
 
     interface_name = parse_arguments(argc, argv);
     gui_data = setup_gui();
@@ -123,7 +125,7 @@ int main(int argc, char *argv[])
 
         if (is_changed)
         {
-            draw(&gui_data, &signal_status, &speed_status, &lights_status);
+            draw(&gui_data, &signal_status, &speed_status, &lights_status, &radio_status);
         }
     }
 

@@ -3,7 +3,7 @@
 void update_lights(struct canfd_frame *cf, int maxdlen, lights_status_t *lights_status)
 {
     int len = (cf->len > maxdlen) ? maxdlen : cf->len;
-    if (len < LIGHTS_POS)
+    if (len <= LIGHTS_POS)
     {
         return;
     }

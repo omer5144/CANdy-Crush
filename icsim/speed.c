@@ -6,7 +6,7 @@ void update_speed(struct canfd_frame *cf, int maxdlen, speed_status_t *speed_sta
     double speed;
     double delta;
 
-    if (len < SPEED_POS + 1)
+    if (len <= SPEED_POS + 1)
     {
         return;
     }

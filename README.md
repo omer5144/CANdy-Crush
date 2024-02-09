@@ -1,27 +1,28 @@
 Instrument Cluster Simulator for SocketCAN
 ------------------------------------------
 
-By: OpenGarages <agent.craig@gmail.com>
-
 Compiling
 ---------
 You will need:
 * SDL2
-* SDL2_Image
+* SDL2_image
+* SDL2_ttf
 * can-utils
 
 You can get can-utils from github or on Ubuntu you may run the following
 
 ```
-  sudo apt-get install libsdl2-dev libsdl2-image-dev can-utils  
+  sudo apt-get install libsdl2-dev libsdl2-image-dev libsdl-ttf-dev can-utils  
 ```
 
-With dependencies installed, you may use the [Meson build system](https://mesonbuild.com/) to build the project:
+With dependencies installed, you may build the project:
 
+```bash
+  gcc controls/*.c -o build/controls.out -I/usr/include/SDL2 -Wall -Wextra -lSDL2 -lSDL2_image -lSDL2_ttf
+  gcc icsim/*.c -o build/icsim.out -I/usr/include/SDL2 -Wall -Wextra -lSDL2 -lSDL2_image -lSDL2_ttf
 ```
-  meson setup builddir && cd builddir
-  meson compile
-```
+
+A build.sh file has also been provided with this repo.
 
 Testing on a virtual CAN interface
 ----------------------------------
@@ -44,19 +45,18 @@ Default operations:
 Start the Instrument Cluster (IC) simulator:
 
 ```
-  ./icsim vcan0
+  ./icsim.out vcan0
 ```
 
 Then startup the controls
 
 ```
-  ./controls vcan0
+  ./controls.out vcan0
 ```
 
-The hard coded defaults should be in sync and the controls should control the IC.  Ideally use a controller similar to
-an XBox controller to interact with the controls interface.  The controls app will generate corrosponding CAN packets
-based on the buttons you press.  The IC Sim sniffs the CAN and looks for relevant CAN packets that would change the
-display.
+The hard coded defaults should be in sync and the controls should control the IC.  
+The controls app will generate corrosponding CAN packets based on the buttons you press.  
+The IC Sim sniffs the CAN and looks for relevant CAN packets that would change the display.
 
 Troubleshooting
 ---------------
@@ -77,33 +77,3 @@ or you could edit the Makefile and change the CFLAGS to point to wherever your
 distro installs the SDL.h header, ie: /usr/include/x86_64-linux-gnu/SDL2
 
 There was also a report that on Arch linux needed sdl2_gfx library.
-
-CAN Hacking Training Usage
---------------------------
-To *safely* train on CAN hacking you can play back a sample recording included in this repo of generic CAN traffic.  This will
-create something similar to normal CAN "noise".  Then start the IC Sim with the -r (randomize) switch.
-
-```
-  ./icsim -r vcan0
-  Using CAN interface vcan0
-  Seed: 1401717026
-```
-
-Now copy the seed number and paste it as the -s (seed) option for the controls.
-
-```
-  ./controls -s 1401717026 vcan0
-```
-
-This will randomize what CAN packets the IC needs and by passing the seed to the controls they will sync.  Randomizing
-changes the arbitration IDs as well as the byte position of the packets used.  This will give you experience in hunting down
-different types of CAN packets on the CAN Bus.
-
-For the most realistic training you can change the difficulty levels.  Set the difficulty to 2 with the controls:
-
-```
-  ./controls -s 1401717026 -l 2 vcan0
-```
-
-This will add additional randomization to the target packets, simulating other data stored in the same arbitration id.
-

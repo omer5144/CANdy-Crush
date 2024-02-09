@@ -3,7 +3,9 @@
         "signals.h": "c",
         "util.h": "c",
         "speed.h": "c",
-        "socket.h": "c"
+        "socket.h": "c",
+        "gui.h": "c",
+        "sdl_ttf.h": "c"
     },
     "C_Cpp.errorSquiggles": "enabled"
 }

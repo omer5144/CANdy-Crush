@@ -75,13 +75,76 @@ void draw_lights(gui_data_t *gui_data, lights_status_t *lights_status)
     }
 }
 
-void draw(gui_data_t *gui_data, signals_status_t *signal_status, speed_status_t *speed_status, lights_status_t *lights_status)
+void draw_radio(gui_data_t *gui_data, radio_status_t *radio_status)
+{
+    SDL_Color on_color = {6, 172, 14, 255}; // Green
+    SDL_Color off_color = {49, 49, 49, 255}; // Gray
+    SDL_Surface *song_surface, *fm_surface, *am_surface;
+    SDL_Texture *song_tex, *fm_tex, *am_tex;
+    SDL_Rect song_rect, fm_rect, am_rect;
+    
+    SDL_SetRenderDrawColor(gui_data->renderer, 49, 49, 49, 255); // Gray
+    SDL_RenderFillRect(gui_data->renderer, &gui_data->radio_frame_rect);
+    SDL_SetRenderDrawColor(gui_data->renderer, 20, 20, 20, 255); // Dark Gray
+    SDL_RenderFillRect(gui_data->renderer, &gui_data->radio_data_rect);
+
+    song_surface = TTF_RenderText_Solid(gui_data->font_big, radio_status->song_name, on_color);
+
+    switch (radio_status->radio_type)
+    {
+    case RADIO_FM:
+        fm_surface = TTF_RenderText_Solid(gui_data->font_small, "FM", on_color);
+        am_surface = TTF_RenderText_Solid(gui_data->font_small, "AM", off_color);
+        break;
+    case RADIO_AM:
+        fm_surface = TTF_RenderText_Solid(gui_data->font_small, "FM", off_color);
+        am_surface = TTF_RenderText_Solid(gui_data->font_small, "AM", on_color);
+        break;
+    case RADIO_OTHER:
+        fm_surface = TTF_RenderText_Solid(gui_data->font_small, "FM", off_color);
+        am_surface = TTF_RenderText_Solid(gui_data->font_small, "AM", off_color);
+        break;
+    }
+
+    song_tex = SDL_CreateTextureFromSurface(gui_data->renderer, song_surface);
+    fm_tex = SDL_CreateTextureFromSurface(gui_data->renderer, fm_surface);
+    am_tex = SDL_CreateTextureFromSurface(gui_data->renderer, am_surface);
+
+    song_rect.x = gui_data->radio_frame_rect.x + (gui_data->radio_frame_rect.w - song_surface->w) / 2;
+    song_rect.y = gui_data->radio_frame_rect.y + (gui_data->radio_frame_rect.h - song_surface->h) / 2;
+    song_rect.w = song_surface->w;
+    song_rect.h = song_surface->h;
+
+    fm_rect.x = gui_data->radio_frame_rect.x + 10;
+    fm_rect.y = gui_data->radio_frame_rect.y + 10;
+    fm_rect.w = fm_surface->w;
+    fm_rect.h = fm_surface->h;
+
+    am_rect.x = gui_data->radio_frame_rect.x + gui_data->radio_frame_rect.w - am_surface->w - 10;
+    am_rect.y = gui_data->radio_frame_rect.y + 10;
+    am_rect.w = am_surface->w;
+    am_rect.h = am_surface->h;
+
+    SDL_RenderCopy(gui_data->renderer, song_tex, NULL, &song_rect);
+    SDL_RenderCopy(gui_data->renderer, fm_tex, NULL, &fm_rect);
+    SDL_RenderCopy(gui_data->renderer, am_tex, NULL, &am_rect);
+
+    SDL_FreeSurface(song_surface);
+    SDL_FreeSurface(fm_surface);
+    SDL_FreeSurface(am_surface);
+    SDL_DestroyTexture(song_tex);
+    SDL_DestroyTexture(fm_tex);
+    SDL_DestroyTexture(am_tex);
+}
+
+void draw(gui_data_t *gui_data, signals_status_t *signal_status, speed_status_t *speed_status, lights_status_t *lights_status, radio_status_t *radio_status)
 {
     SDL_RenderCopy(gui_data->renderer, gui_data->dashboard_tex, NULL, NULL);
 
     draw_signals(gui_data, signal_status);
     draw_speed(gui_data, speed_status);
     draw_lights(gui_data, lights_status);
+    draw_radio(gui_data, radio_status);
 
     SDL_RenderPresent(gui_data->renderer);
 }
@@ -101,6 +164,12 @@ gui_data_t setup_gui()
     if (IMG_Init(IMG_INIT_PNG) == 0)
     {
         perror("SDL_Init");
+        goto error;
+    }
+
+    if (TTF_Init() < 0)
+    {
+        perror("TTF_Init");
         goto error;
     }
     
@@ -134,6 +203,14 @@ gui_data_t setup_gui()
         goto error;
     }
 
+    gui_data.font_big = TTF_OpenFont(DATA_DIR "BAHNSCHRIFT.ttf", 24);
+    gui_data.font_small = TTF_OpenFont(DATA_DIR "BAHNSCHRIFT.ttf", 18);
+    if (gui_data.font_big == NULL || gui_data.font_small == NULL)
+    {
+        perror("TTF_OpenFont");
+        goto error;
+    }
+
     gui_data.dashboard_tex = SDL_CreateTextureFromSurface(gui_data.renderer, dashboard);
     gui_data.needle_tex = SDL_CreateTextureFromSurface(gui_data.renderer, needle);
     gui_data.off_left_signal_tex = SDL_CreateTextureFromSurface(gui_data.renderer, off_left_signal);
@@ -158,11 +235,11 @@ gui_data_t setup_gui()
     gui_data.speed_rect.h = needle->h / 2;
     gui_data.speed_center_rect.x = gui_data.speed_rect.w * 0.87;
     gui_data.speed_center_rect.y = gui_data.speed_rect.h / 2;
-    gui_data.left_signal_rect.x = SCREEN_WIDTH * 0.2;
+    gui_data.left_signal_rect.x = SCREEN_WIDTH * 0.15;
     gui_data.left_signal_rect.y = SCREEN_HEIGHT * 0.1;
     gui_data.left_signal_rect.w = off_left_signal->w / 2;
     gui_data.left_signal_rect.h = off_left_signal->h / 2;
-    gui_data.right_signal_rect.x = SCREEN_WIDTH * 0.8 - gui_data.left_signal_rect.w;
+    gui_data.right_signal_rect.x = SCREEN_WIDTH * 0.85 - gui_data.left_signal_rect.w;
     gui_data.right_signal_rect.y = SCREEN_HEIGHT * 0.1;
     gui_data.right_signal_rect.w = off_right_signal->w / 2;
     gui_data.right_signal_rect.h = off_right_signal->h / 2;
@@ -174,6 +251,14 @@ gui_data_t setup_gui()
     gui_data.right_light_rect.y = SCREEN_HEIGHT * 0.3;
     gui_data.right_light_rect.w = low_light->w / 2;
     gui_data.right_light_rect.h = low_light->h / 2;
+    gui_data.radio_frame_rect.x = SCREEN_WIDTH * 0.3;
+    gui_data.radio_frame_rect.y = SCREEN_HEIGHT * 0.05;
+    gui_data.radio_frame_rect.w = SCREEN_WIDTH * 0.4;
+    gui_data.radio_frame_rect.h = SCREEN_HEIGHT * 0.15;
+    gui_data.radio_data_rect.x = gui_data.radio_frame_rect.x + 5;
+    gui_data.radio_data_rect.y = gui_data.radio_frame_rect.y + 5;
+    gui_data.radio_data_rect.w = gui_data.radio_frame_rect.w - 10;
+    gui_data.radio_data_rect.h = gui_data.radio_frame_rect.h - 10;
 
     SDL_FreeSurface(dashboard);
     SDL_FreeSurface(needle);
@@ -181,6 +266,9 @@ gui_data_t setup_gui()
     SDL_FreeSurface(off_right_signal);
     SDL_FreeSurface(on_left_signal);
     SDL_FreeSurface(on_right_signal);
+    SDL_FreeSurface(low_light);
+    SDL_FreeSurface(medium_light);
+    SDL_FreeSurface(high_light);
 
     goto success;
 
@@ -204,9 +292,13 @@ void cleanup_gui(gui_data_t *gui_data)
     SDL_DestroyTexture(gui_data->medium_light_tex);
     SDL_DestroyTexture(gui_data->high_light_tex);
 
+    TTF_CloseFont(gui_data->font_big);
+    TTF_CloseFont(gui_data->font_small);
+
     SDL_DestroyRenderer(gui_data->renderer);
     SDL_DestroyWindow(gui_data->window);
 
+    TTF_Quit();
     IMG_Quit();
     SDL_Quit();
 }

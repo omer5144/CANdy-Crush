@@ -3,7 +3,7 @@
 void update_signals(struct canfd_frame *cf, int maxdlen, signals_status_t *signals_status)
 {
     int len = (cf->len > maxdlen) ? maxdlen : cf->len;
-    if (len < SIGNAL_POS)
+    if (len <= SIGNAL_POS)
     {
         return;
     }
