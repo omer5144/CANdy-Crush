@@ -20,7 +20,7 @@ void Usage(char *msg)
 {
     if (msg)
         printf("%s\n", msg);
-    printf("Usage: icsim <can>\n");
+    printf("Usage: dashboard <can>\n");
     exit(1);
 }
 
@@ -91,6 +91,8 @@ int main(int argc, char *argv[])
     int nbytes, maxdlen;
     int is_changed = 1;
 
+    draw(&gui_data, &signal_status, &speed_status, &lights_status, &radio_status);
+    
     while (running)
     {
         while (SDL_PollEvent(&event) != 0)

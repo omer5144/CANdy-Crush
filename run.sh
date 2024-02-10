@@ -1,8 +1,6 @@
 #!/bin/bash
 
-trap 'kill $(jobs -p)' EXIT
-
-./build/controls.out vcan0 &         # dashboard
-./build/icsim.out vcan0 &      # joystick
+./build/keyboard.out vcan0 &    # dashboard
+./build/dashboard.out vcan0 &       # keyboard
 
 wait

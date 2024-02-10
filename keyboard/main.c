@@ -23,7 +23,7 @@ void usage(char *msg)
 {
 	if (msg)
 		printf("%s\n", msg);
-	printf("Usage: controls <can>\n");
+	printf("Usage: keyboard <can>\n");
 	exit(1);
 }
 

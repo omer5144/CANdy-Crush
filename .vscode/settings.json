@@ -5,7 +5,8 @@
         "speed.h": "c",
         "socket.h": "c",
         "gui.h": "c",
-        "sdl_ttf.h": "c"
+        "sdl_ttf.h": "c",
+        "signal.h": "c"
     },
     "C_Cpp.errorSquiggles": "enabled"
 }

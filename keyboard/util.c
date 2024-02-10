@@ -1,17 +1,27 @@
 #include "util.h"
 
-int create_can_traffic_process(char *interface_name)
+pid_t traffic_pid = -1;
+
+void kill_child(int sig)
 {
-	int play_id = -1;
+	if (sig == SIGALRM)
+	{
+		kill(traffic_pid, SIGKILL);
+	}
+}
+
+void create_can_traffic_process(char *interface_name)
+{
 	char can2can[50];
 
-	play_id = fork();
-	if (play_id == -1)
+	signal(SIGALRM, (void (*)(int))kill_child);
+	traffic_pid = fork();
+	if (traffic_pid == -1)
 	{
 		perror("Couldn't fork bg player\n");
 		exit(-1);
 	}
-	else if (play_id == 0)
+	else if (traffic_pid == 0)
 	{
 		snprintf(can2can, 49, "%s=can0", interface_name);
 		if (execlp("canplayer", "canplayer", "-I", CAN_TRAFFIC_FILE_PATH, "-l", "i", can2can, NULL) == -1)
@@ -20,8 +30,6 @@ int create_can_traffic_process(char *interface_name)
 		}
 		exit(0);
 	}
-
-	return play_id;
 }
 
 int create_can_socket(char *interface_name)
@@ -78,5 +86,5 @@ void cleanup_can_socket(int sock)
 
 void cleanup_can_traffic_process()
 {
-	system("pkill canplayer"); // TODO: kill safely
+	kill_child(SIGALRM);
 }
