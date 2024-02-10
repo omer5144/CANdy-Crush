@@ -153,8 +153,9 @@ gui_data_t setup_gui()
 {
     gui_data_t gui_data;
     char data_file[DATA_FILE_SIZE];
-    SDL_Surface *dashboard, *needle, *off_left_signal, *off_right_signal, *on_left_signal, *on_right_signal, *low_light, *medium_light, *high_light;
-    
+    SDL_Surface *dashboard, *needle, *off_left_signal, *off_right_signal, *on_left_signal, *on_right_signal, *low_light, *medium_light, *high_light, *icon;
+    SDL_SysWMinfo wmInfo;
+
     if (SDL_Init(SDL_INIT_VIDEO) < 0)
     {
         perror("SDL_Init");
@@ -163,7 +164,7 @@ gui_data_t setup_gui()
 
     if (IMG_Init(IMG_INIT_PNG) == 0)
     {
-        perror("SDL_Init");
+        perror("IMG_Init");
         goto error;
     }
 
@@ -173,7 +174,7 @@ gui_data_t setup_gui()
         goto error;
     }
     
-    gui_data.window = SDL_CreateWindow("ARAMobile", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT,
+    gui_data.window = SDL_CreateWindow("ARAMobile Dashboard", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT,
                                        SDL_WINDOW_SHOWN);
     if (gui_data.window == NULL)
     {
@@ -196,12 +197,20 @@ gui_data_t setup_gui()
     low_light = IMG_Load(get_data("low_light.png", data_file));
     medium_light = IMG_Load(get_data("medium_light.png", data_file));
     high_light = IMG_Load(get_data("high_light.png", data_file));
+    icon = IMG_Load(get_data("dashboard_icon.png", data_file));
     if (dashboard == NULL || needle == NULL || off_left_signal == NULL || off_right_signal == NULL || on_left_signal == NULL || on_right_signal == NULL ||
-        low_light == NULL || medium_light == NULL || high_light == NULL)
+        low_light == NULL || medium_light == NULL || high_light == NULL || icon == NULL)
     {
         perror("IMG_Load");
         goto error;
     }
+
+    SDL_VERSION(&wmInfo.version);
+    if (SDL_GetWindowWMInfo(gui_data.window, &wmInfo) == 0) {
+        perror("SDL_GetWindowWMInfo");
+        goto error;
+    }
+    SDL_SetWindowIcon(gui_data.window, icon);
 
     gui_data.font_big = TTF_OpenFont(DATA_DIR "BAHNSCHRIFT.ttf", 24);
     gui_data.font_small = TTF_OpenFont(DATA_DIR "BAHNSCHRIFT.ttf", 18);
@@ -269,6 +278,7 @@ gui_data_t setup_gui()
     SDL_FreeSurface(low_light);
     SDL_FreeSurface(medium_light);
     SDL_FreeSurface(high_light);
+    SDL_FreeSurface(icon);
 
     goto success;
 

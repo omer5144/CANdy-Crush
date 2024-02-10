@@ -108,7 +108,7 @@ int main(int argc, char *argv[])
         }
 
         nbytes = recvmsg(sock, &msg_data.msg, MSG_DONTWAIT);
-        if (nbytes < 0 )
+        if (nbytes < 0)
         {
             if (errno == EAGAIN)
             {
