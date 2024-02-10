@@ -9,6 +9,7 @@
 #include <net/if.h>
 #include <linux/can.h>
 #include <linux/can/raw.h>
+#include <errno.h>
 #include "util.h"
 #include "gui.h"
 #include "signals.h"
@@ -106,12 +107,19 @@ int main(int argc, char *argv[])
             SDL_Delay(5);
         }
 
-        nbytes = recvmsg(sock, &msg_data.msg, 0);
-        if (nbytes < 0)
+        nbytes = recvmsg(sock, &msg_data.msg, MSG_DONTWAIT);
+        if (nbytes < 0 )
         {
-            fprintf(stderr, "read failed\n");
-            running = 0;
-            goto cleanup;
+            if (errno == EAGAIN)
+            {
+                continue;
+            }
+            else
+            {
+                fprintf(stderr, "read failed\n");
+                running = 0;
+                goto cleanup;
+            }
         }
 
         if ((size_t)nbytes == CAN_MTU)
