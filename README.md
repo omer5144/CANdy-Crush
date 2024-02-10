@@ -56,22 +56,13 @@ Then startup the dashboard
 The keyboard app will generate corrosponding CAN packets based on the buttons you press.  
 The dashboard sniffs the CAN and looks for relevant CAN packets that would change the display.
 
-Troubleshooting
----------------
-* If you get an error about canplayer then you may not have can-utils properly installed and in your path.
-* If the controller does not seem to be responding make sure the keyboard window is selected and active
+Images
+------
 
-## lib.o not linking
-If lib.o doesn't link it's probably because it's the wrong arch for your platform.  To fix this you will
-want to compile can-utils and copy the newly compiled lib.o to the dashboard directory.  You can get can-utils
-from: https://github.com/linux-can/can-utils
+### Dashboard
 
-## read: Bad address
-When running `./dashboard vcan0` you end up getting a `read: Bad Address` message,
-this is typically a result of needing to recompile with updated SDL libraries.
-Make sure you have the recommended latest SDL2 libraries.  Some users have
-reported fixing this problem by creating symlinks to the SDL.h files manually
-or you could edit the Makefile and change the CFLAGS to point to wherever your
-distro installs the SDL.h header, ie: /usr/include/x86_64-linux-gnu/SDL2
+![](./data/dashboard_tutorial.png)
 
-There was also a report that on Arch linux needed sdl2_gfx library.
+### Keyboard
+
+![](./data/keyboard_tutorial.png)
