@@ -35,28 +35,26 @@ You can run the following commands to setup a virtual can interface
   sudo ip link set up vcan0
 ```
 
-If you type ifconfig vcan0 you should see a vcan0 interface. A setup_vcan.sh file has also been provided with this
-repo.
+If you type ifconfig vcan0 you should see a vcan0 interface. A setup_vcan.sh file has also been provided with this repo.
 
 Usage
 -----
 Default operations:
 
-Start the Instrument Cluster (IC) simulator:
-
-```
-  ./dashboard.out vcan0
-```
-
-Then startup the keyboard
+Start the keyboard:
 
 ```
   ./keyboard.out vcan0
 ```
 
-The hard coded defaults should be in sync and the keyboard should control the dashboard.  
+Then startup the dashboard
+
+```
+  ./dashboard.out vcan0
+```
+
 The keyboard app will generate corrosponding CAN packets based on the buttons you press.  
-The IC Sim sniffs the CAN and looks for relevant CAN packets that would change the display.
+The dashboard sniffs the CAN and looks for relevant CAN packets that would change the display.
 
 Troubleshooting
 ---------------
