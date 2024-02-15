@@ -59,6 +59,12 @@ A run.sh file has also been provided with this repo.
 Exercises
 ---------
 The simulator designed for research use  
+I order to use write python scripts that communicate with the can interface you will need the python-can library:
+
+```bash
+  pip install python-can
+```
+
 List of exercises ideas:
 
 ### Signals
@@ -87,8 +93,8 @@ List of exercises ideas:
     4. turn on high lights
   - Write a script that leaks the radio station number using the lights volume
 
-A scripts directory with solutions has also been provided with this repo.
-The ```binary_search.sh``` script is used to find a specific command using the binary search algorithm
+A scripts directory with solutions has also been provided with this repo.  
+The binary_search.sh script is used to find a specific command using the binary search algorithm
 
 Images
 ------
