@@ -14,16 +14,13 @@ while true; do
         head -n $half_lines dump.log > dump_0.log
         tail -n +$((half_lines + 1)) dump.log > dump_1.log
         rm dump.log
-
+        
         canplayer -I dump_1.log
-
         read -p "Did you see the action? (0 / 1):   " choice
 
         if [ $choice -eq 0 ]; then
-            rm dump_1.log
             mv dump_0.log dump.log
         else
-            rm dump_0.log
             mv dump_1.log dump.log
         fi
     else

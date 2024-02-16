@@ -93,7 +93,7 @@ List of exercises ideas:
     4. turn on high lights
   - Write a script that leaks the radio station number using the lights volume
 
-A scripts directory with solutions has also been provided with this repo.  
+A solutions directory with solutions has also been provided with this repo.  
 The binary_search.sh script is used to find a specific command using the binary search algorithm
 
 Images
