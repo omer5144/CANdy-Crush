@@ -10,7 +10,7 @@ void kill_child(int sig)
 	}
 }
 
-void create_can_traffic_process(char *interface_name)
+pid_t create_can_traffic_process(char *interface_name)
 {
 	char can2can[50];
 
@@ -30,6 +30,8 @@ void create_can_traffic_process(char *interface_name)
 		}
 		exit(0);
 	}
+
+	return traffic_pid;
 }
 
 int create_can_socket(char *interface_name)
@@ -87,4 +89,19 @@ void cleanup_can_socket(int sock)
 void cleanup_can_traffic_process()
 {
 	kill_child(SIGALRM);
+}
+
+int is_process_running(pid_t pid)
+{
+	int status;
+	pid_t result = waitpid(pid, &status, WNOHANG);
+
+	if (result == 0) {
+		return 1;
+	} else if (result > 0) {
+		return 0;
+	} else {
+		perror("waitpid");
+		return 1;
+	}
 }

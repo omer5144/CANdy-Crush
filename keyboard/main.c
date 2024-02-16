@@ -60,7 +60,7 @@ radio_state_t generate_random_radio()
 	return radio_state;
 }
 
-void main_loop(gui_data_t *gui_data, int sock)
+void main_loop(gui_data_t *gui_data, int sock, pid_t traffic_pid)
 {
 	int running = 1;
 	SDL_Event event;
@@ -73,6 +73,11 @@ void main_loop(gui_data_t *gui_data, int sock)
 
 	while (running)
 	{
+		if (is_process_running(traffic_pid) == 0) {
+			running = 0;
+			break;
+		}
+		
 		while (SDL_PollEvent(&event) != 0)
 		{
 			switch (event.type)
@@ -158,15 +163,16 @@ void cleanup(gui_data_t *gui_data, int sock)
 int main(int argc, char *argv[])
 {
 	char *interface_name = NULL;
+	pid_t traffic_pid;
 	int sock = -1;
 	gui_data_t gui_data = {NULL, NULL, NULL, NULL};
 
 	interface_name = parse_arguments(argc, argv);
-	create_can_traffic_process(interface_name);
+	traffic_pid = create_can_traffic_process(interface_name);
 	sock = create_can_socket(interface_name);
 	gui_data = setup_gui();
 
-	main_loop(&gui_data, sock);
+	main_loop(&gui_data, sock, traffic_pid);
 	cleanup(&gui_data, sock);
 
 	return 0;
