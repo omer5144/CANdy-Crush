@@ -137,7 +137,7 @@ void draw_radio(gui_data_t *gui_data, radio_status_t *radio_status)
     SDL_DestroyTexture(am_tex);
 }
 
-void draw(gui_data_t *gui_data, signals_status_t *signal_status, speed_status_t *speed_status, lights_status_t *lights_status, radio_status_t *radio_status)
+void draw(gui_data_t *gui_data, signals_status_t *signal_status, speed_status_t *speed_status, lights_status_t *lights_status, radio_status_t *radio_status, doors_status_t* doors_status)
 {
     SDL_RenderCopy(gui_data->renderer, gui_data->dashboard_tex, NULL, NULL);
 
@@ -234,8 +234,8 @@ gui_data_t setup_gui()
     gui_data.medium_light_tex = SDL_CreateTextureFromSurface(gui_data.renderer, medium_light);
     gui_data.high_light_tex = SDL_CreateTextureFromSurface(gui_data.renderer, high_light);
     gui_data.doors_tex = SDL_CreateTextureFromSurface(gui_data.renderer, doors);
-    gui_data.left_door_tex = SDL_CreateTextureFromSurface(gui_data.renderer, left_door_tex);
-    gui_data.right_door_tex = SDL_CreateTextureFromSurface(gui_data.renderer, right_door_tex);
+    gui_data.left_door_tex = SDL_CreateTextureFromSurface(gui_data.renderer, left_door);
+    gui_data.right_door_tex = SDL_CreateTextureFromSurface(gui_data.renderer, right_door);
 
     if (gui_data.dashboard_tex == NULL || gui_data.needle_tex == NULL || gui_data.off_left_signal_tex == NULL ||
         gui_data.off_right_signal_tex == NULL || gui_data.on_left_signal_tex == NULL || gui_data.on_right_signal_tex == NULL ||
