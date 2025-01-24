@@ -301,8 +301,8 @@ gui_data_t setup_gui()
     gui_data.radio_data_rect.h = gui_data.radio_frame_rect.h - 10;
     gui_data.doors_rect.x = SCREEN_WIDTH * 0.25;
     gui_data.doors_rect.y = SCREEN_WIDTH * 0.75;
-    gui_data.doors_rect.w = doors.w;
-    gui_data.doors_rect.h = doors.h;
+    gui_data.doors_rect.w = doors->w;
+    gui_data.doors_rect.h = doors->h;
 
     SDL_FreeSurface(dashboard);
     SDL_FreeSurface(needle);
