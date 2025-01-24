@@ -46,7 +46,7 @@ typedef struct
 } gui_data_t;
 
 gui_data_t setup_gui();
-void draw(gui_data_t *gui_data, signals_status_t *signal_status, speed_status_t *speed_status, lights_status_t *lights_status, radio_status_t *radio_status);
+void draw(gui_data_t *gui_data, signals_status_t *signal_status, speed_status_t *speed_status, lights_status_t *lights_status, radio_status_t *radio_status, doors_status_t* doors_status);
 void cleanup_gui(gui_data_t *gui_data);
 
 #endif
