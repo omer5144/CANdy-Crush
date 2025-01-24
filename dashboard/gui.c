@@ -139,6 +139,7 @@ void draw_radio(gui_data_t *gui_data, radio_status_t *radio_status)
 
 void draw_doors(gui_data_t *gui_data, doors_status_t *doors_status)
 {    
+    printf("lalala");
     SDL_RenderCopy(gui_data->renderer, gui_data->doors_tex, NULL, &gui_data->doors_rect);
 
     // if (doors_status->front_left)
@@ -299,7 +300,7 @@ gui_data_t setup_gui()
     gui_data.radio_data_rect.y = gui_data.radio_frame_rect.y + 5;
     gui_data.radio_data_rect.w = gui_data.radio_frame_rect.w - 10;
     gui_data.radio_data_rect.h = gui_data.radio_frame_rect.h - 10;
-    gui_data.doors_rect.x = SCREEN_WIDTH * 0.25;
+    gui_data.doors_rect.x = SCREEN_WIDTH * 0.1;
     gui_data.doors_rect.y = SCREEN_WIDTH * 0.75;
     gui_data.doors_rect.w = doors->w;
     gui_data.doors_rect.h = doors->h;
