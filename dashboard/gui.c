@@ -139,25 +139,24 @@ void draw_radio(gui_data_t *gui_data, radio_status_t *radio_status)
 
 void draw_doors(gui_data_t *gui_data, doors_status_t *doors_status)
 {    
-    printf("lalala");
     SDL_RenderCopy(gui_data->renderer, gui_data->doors_tex, NULL, &gui_data->doors_rect);
 
-    // if (doors_status->front_left)
-    // {
-    //     SDL_RenderCopy(gui_data->renderer, gui_data->left_door_tex, NULL, &gui_data->front_left_door_rect);
-    // }
-    // if (doors_status->front_right)
-    // {
-    //     SDL_RenderCopy(gui_data->renderer, gui_data->right_door_tex, NULL, &gui_data->front_right_door_rect);
-    // }
-    // if (doors_status->back_left)
-    // {
-    //     SDL_RenderCopy(gui_data->renderer, gui_data->left_door_tex, NULL, &gui_data->back_left_door_rect);
-    // }
-    // if (doors_status->back_right)
-    // {
-    //     SDL_RenderCopy(gui_data->renderer, gui_data->right_door_tex, NULL, &gui_data->back_right_door_rect);
-    // }
+    if (doors_status->front_left)
+    {
+        SDL_RenderCopy(gui_data->renderer, gui_data->left_door_tex, NULL, &gui_data->front_left_door_rect);
+    }
+    if (doors_status->front_right)
+    {
+        SDL_RenderCopy(gui_data->renderer, gui_data->right_door_tex, NULL, &gui_data->front_right_door_rect);
+    }
+    if (doors_status->back_left)
+    {
+        SDL_RenderCopy(gui_data->renderer, gui_data->left_door_tex, NULL, &gui_data->back_left_door_rect);
+    }
+    if (doors_status->back_right)
+    {
+        SDL_RenderCopy(gui_data->renderer, gui_data->right_door_tex, NULL, &gui_data->back_right_door_rect);
+    }
 }
 
 void draw(gui_data_t *gui_data, signals_status_t *signal_status, speed_status_t *speed_status, lights_status_t *lights_status, radio_status_t *radio_status, doors_status_t* doors_status)
@@ -304,6 +303,31 @@ gui_data_t setup_gui()
     gui_data.doors_rect.y = SCREEN_WIDTH * 0.75;
     gui_data.doors_rect.w = doors->w;
     gui_data.doors_rect.h = doors->h;
+
+    gui_data.doors_rect.x = SCREEN_WIDTH * 0.1;
+    gui_data.doors_rect.y = SCREEN_WIDTH * 0.75;
+    gui_data.doors_rect.w = doors->w;
+    gui_data.doors_rect.h = doors->h;
+
+    gui_data.front_left_door_rect.x = SCREEN_WIDTH * 0.1;
+    gui_data.front_left_door_rect.y = SCREEN_WIDTH * 0.75;
+    gui_data.front_left_door_rect.w = left_door->w;
+    gui_data.front_left_door_rect.h = left_door->h;
+
+    gui_data.front_right_door_rect.x = SCREEN_WIDTH * 0.2;
+    gui_data.front_right_door_rect.y = SCREEN_WIDTH * 0.75;
+    gui_data.front_right_door_rect.w = right_door->w;
+    gui_data.front_right_door_rect.h = right_door->h;
+
+    gui_data.back_left_door_rect.x = SCREEN_WIDTH * 0.1;
+    gui_data.back_left_door_rect.y = SCREEN_WIDTH * 0.85;
+    gui_data.back_left_door_rect.w = left_door->w;
+    gui_data.back_left_door_rect.h = left_door->h;
+
+    gui_data.back_right_door_rect.x = SCREEN_WIDTH * 0.2;
+    gui_data.back_right_door_rect.y = SCREEN_WIDTH * 0.85;
+    gui_data.back_right_door_rect.w = right_door->w;
+    gui_data.back_right_door_rect.h = right_door->h;
 
     SDL_FreeSurface(dashboard);
     SDL_FreeSurface(needle);
