@@ -108,15 +108,15 @@ void main_loop(gui_data_t *gui_data, int sock, pid_t traffic_pid)
 					signal_state.turn = RIGHT_TURN;
 					break;
 				case SDLK_1:
-				case SDLK_KP_1:
+				// case SDLK_KP_1:
 					lights_state.new_lights = VOLUME_LOW;
 					break;
 				case SDLK_2:
-				case SDLK_KP_2:
+				// case SDLK_KP_2:
 					lights_state.new_lights = VOLUME_MEDIUM;
 					break;
 				case SDLK_3:
-				case SDLK_KP_3:
+				// case SDLK_KP_3:
 					lights_state.new_lights = VOLUME_HIGH;
 					break;
 				}
