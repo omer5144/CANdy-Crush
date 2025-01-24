@@ -14,10 +14,10 @@ void send_doors(int sock, int doors_bitfield)
 void check_doors(int sock, doors_state_t *doors_state)
 {
 	int doors_bitfield = (
-		(doors_state->is_front_left_door_open * 1) ||
-		(doors_state->is_front_right_door_open * 2) ||
-		(doors_state->is_back_left_door_open * 4) ||
-		(doors_state->is_back_right_door_open * 8)
+		(doors_state->is_front_left_door_open << 0) |
+		(doors_state->is_front_right_door_open << 1) |
+		(doors_state->is_back_left_door_open << 2) |
+		(doors_state->is_back_right_door_open << 3)
 	);
 
 	send_doors(sock, doors_bitfield);
