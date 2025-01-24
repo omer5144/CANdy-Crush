@@ -3,6 +3,8 @@
 
 #include <linux/can.h>
 #include <linux/can/raw.h>
+#include <string.h>
+#include "util.h"
 
 #define DOORS_ID 500
 #define DOORS_POSITION 0

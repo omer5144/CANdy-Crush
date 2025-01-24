@@ -118,16 +118,16 @@ void main_loop(gui_data_t *gui_data, int sock, pid_t traffic_pid)
 					lights_state.new_lights = VOLUME_HIGH;
 					break;
 				case SDLK_KP_7:
-					doors_state.is_front_left_door_open = 1 - doors_state.is_front_left_door_open 
+					doors_state.is_front_left_door_open = 1 - doors_state.is_front_left_door_open;
 					break;
 				case SDLK_KP_9:
-					doors_state.is_front_right_door_open = 1 - doors_state.is_front_right_door_open
+					doors_state.is_front_right_door_open = 1 - doors_state.is_front_right_door_open;
 					break;
 				case SDLK_KP_1:
-					doors_state.is_back_left_door_open = 1 - doors_state.is_back_left_door_open
+					doors_state.is_back_left_door_open = 1 - doors_state.is_back_left_door_open;
 					break;
 				case SDLK_KP_3:
-					doors_state.is_back_right_door_open = 1 - doors_state.is_back_right_door_open
+					doors_state.is_back_right_door_open = 1 - doors_state.is_back_right_door_open;
 					break;
 				}
 				break;
