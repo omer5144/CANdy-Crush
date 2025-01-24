@@ -11,7 +11,7 @@ void send_doors(int sock, int doors_bitfield)
 	send_pkt(CAN_MTU, &cf, sock);
 }
 
-void check_turn_signal(int sock, doors_state_t *doors_state)
+void check_doors(int sock, doors_state_t *doors_state)
 {
 	int doors_bitfield = (
 		(doors_state->is_front_left_door_open * 1) ||
