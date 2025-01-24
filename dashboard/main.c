@@ -16,6 +16,7 @@
 #include "speed.h"
 #include "lights.h"
 #include "radio.h"
+#include "doors.h"
 
 void Usage(char *msg)
 {
@@ -57,6 +58,7 @@ int main(int argc, char *argv[])
     speed_status_t speed_status = {0};
     lights_status_t lights_status = {0, 0};
     radio_status_t radio_status = {0, RADIO_OTHER, "----------"};
+    doors_status_t doors_status = {0, 0, 0, 0};
 
     char *songs[] = {"Sugar, Sugar",
                     "Candy",
@@ -92,7 +94,7 @@ int main(int argc, char *argv[])
     int nbytes, maxdlen;
     int is_changed = 1;
 
-    draw(&gui_data, &signal_status, &speed_status, &lights_status, &radio_status);
+    draw(&gui_data, &signal_status, &speed_status, &lights_status, &radio_status, &doors_status);
     
     while (running)
     {
@@ -153,13 +155,16 @@ int main(int argc, char *argv[])
         case RADIO_ID:
             update_radio(&msg_data.frame, maxdlen, &radio_status, songs);
             break;
+        case DOORS_ID:
+            update_doors(&msg_data.frame, maxdlen, &doors_status);
+            break;
         default:
             is_changed = 0;
         }
 
         if (is_changed)
         {
-            draw(&gui_data, &signal_status, &speed_status, &lights_status, &radio_status);
+            draw(&gui_data, &signal_status, &speed_status, &lights_status, &radio_status, &doors_status);
         }
     }
 

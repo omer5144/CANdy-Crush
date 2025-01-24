@@ -17,6 +17,7 @@
 #include "speed.h"
 #include "lights.h"
 #include "radio.h"
+#include "doors.h"
 #include "gui.h"
 
 void usage(char *msg)
@@ -68,7 +69,7 @@ void main_loop(gui_data_t *gui_data, int sock, pid_t traffic_pid)
 	signal_state_t signal_state = {0, 0, 0};
 	lights_state_t lights_state = {0, VOLUME_NONE, VOLUME_NONE};
 	radio_state_t radio_state = generate_random_radio();
-
+	doors_state_t doors_state = {0, 0, 0, 0};
 	int current_time;
 
 	while (running)
@@ -108,16 +109,25 @@ void main_loop(gui_data_t *gui_data, int sock, pid_t traffic_pid)
 					signal_state.turn = RIGHT_TURN;
 					break;
 				case SDLK_1:
-				case SDLK_KP_1:
 					lights_state.new_lights = VOLUME_LOW;
 					break;
 				case SDLK_2:
-				case SDLK_KP_2:
 					lights_state.new_lights = VOLUME_MEDIUM;
 					break;
 				case SDLK_3:
-				case SDLK_KP_3:
 					lights_state.new_lights = VOLUME_HIGH;
+					break;
+				case SDLK_KP_7:
+					doors_state.is_front_left_door_open = 1 - doors_state.is_front_left_door_open;
+					break;
+				case SDLK_KP_9:
+					doors_state.is_front_right_door_open = 1 - doors_state.is_front_right_door_open;
+					break;
+				case SDLK_KP_1:
+					doors_state.is_back_left_door_open = 1 - doors_state.is_back_left_door_open;
+					break;
+				case SDLK_KP_3:
+					doors_state.is_back_right_door_open = 1 - doors_state.is_back_right_door_open;
 					break;
 				}
 				break;
@@ -149,6 +159,7 @@ void main_loop(gui_data_t *gui_data, int sock, pid_t traffic_pid)
 		check_turn_signal(sock, current_time, &signal_state);
 		check_lights(sock, &lights_state);
 		check_radio(sock, current_time, &radio_state);
+		check_doors(sock, &doors_state);
 		SDL_Delay(5);
 	}
 }
