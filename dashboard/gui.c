@@ -153,7 +153,7 @@ gui_data_t setup_gui()
 {
     gui_data_t gui_data;
     char data_file[DATA_FILE_SIZE];
-    SDL_Surface *dashboard, *needle, *off_left_signal, *off_right_signal, *on_left_signal, *on_right_signal, *low_light, *medium_light, *high_light, *icon;
+    SDL_Surface *dashboard, *needle, *off_left_signal, *off_right_signal, *on_left_signal, *on_right_signal, *low_light, *medium_light, *high_light, *icon, *doors, *left_door, *right_door;
     SDL_SysWMinfo wmInfo;
 
     if (SDL_Init(SDL_INIT_VIDEO) < 0)
@@ -198,8 +198,12 @@ gui_data_t setup_gui()
     medium_light = IMG_Load(get_data("medium_light.png", data_file));
     high_light = IMG_Load(get_data("high_light.png", data_file));
     icon = IMG_Load(get_data("dashboard_icon.png", data_file));
+    doors = IMG_Load(get_data("doors.png", data_file));
+    left_door = IMG_Load(get_data("left_door.png", data_file));
+    right_door = IMG_Load(get_data("right_door.png", data_file));
+
     if (dashboard == NULL || needle == NULL || off_left_signal == NULL || off_right_signal == NULL || on_left_signal == NULL || on_right_signal == NULL ||
-        low_light == NULL || medium_light == NULL || high_light == NULL || icon == NULL)
+        low_light == NULL || medium_light == NULL || high_light == NULL || icon == NULL || doors == NULL || left_door == NULL || right_door == NULL)
     {
         perror("IMG_Load");
         goto error;
@@ -229,10 +233,14 @@ gui_data_t setup_gui()
     gui_data.low_light_tex = SDL_CreateTextureFromSurface(gui_data.renderer, low_light);
     gui_data.medium_light_tex = SDL_CreateTextureFromSurface(gui_data.renderer, medium_light);
     gui_data.high_light_tex = SDL_CreateTextureFromSurface(gui_data.renderer, high_light);
+    gui_data.doors_tex = SDL_CreateTextureFromSurface(gui_data.renderer, doors);
+    gui_data.left_door_tex = SDL_CreateTextureFromSurface(gui_data.renderer, left_door_tex);
+    gui_data.right_door_tex = SDL_CreateTextureFromSurface(gui_data.renderer, right_door_tex);
 
     if (gui_data.dashboard_tex == NULL || gui_data.needle_tex == NULL || gui_data.off_left_signal_tex == NULL ||
         gui_data.off_right_signal_tex == NULL || gui_data.on_left_signal_tex == NULL || gui_data.on_right_signal_tex == NULL ||
-        gui_data.low_light_tex == NULL || gui_data.medium_light_tex == NULL || gui_data.high_light_tex == NULL)
+        gui_data.low_light_tex == NULL || gui_data.medium_light_tex == NULL || gui_data.high_light_tex == NULL ||
+        gui_data.doors_tex == NULL || gui_data.left_door_tex == NULL || gui_data.right_door_tex == NULL)
     {
         perror("SDL_CreateTextureFromSurface");
         goto error;
@@ -268,6 +276,7 @@ gui_data_t setup_gui()
     gui_data.radio_data_rect.y = gui_data.radio_frame_rect.y + 5;
     gui_data.radio_data_rect.w = gui_data.radio_frame_rect.w - 10;
     gui_data.radio_data_rect.h = gui_data.radio_frame_rect.h - 10;
+    // TODO: doors
 
     SDL_FreeSurface(dashboard);
     SDL_FreeSurface(needle);
@@ -279,6 +288,9 @@ gui_data_t setup_gui()
     SDL_FreeSurface(medium_light);
     SDL_FreeSurface(high_light);
     SDL_FreeSurface(icon);
+    SDL_FreeSurface(doors);
+    SDL_FreeSurface(left_door);
+    SDL_FreeSurface(right_door);
 
     goto success;
 
@@ -301,6 +313,9 @@ void cleanup_gui(gui_data_t *gui_data)
     SDL_DestroyTexture(gui_data->low_light_tex);
     SDL_DestroyTexture(gui_data->medium_light_tex);
     SDL_DestroyTexture(gui_data->high_light_tex);
+    SDL_DestroyTexture(gui_data->doors_tex);
+    SDL_DestroyTexture(gui_data->left_door_tex);
+    SDL_DestroyTexture(gui_data->right_door_tex);
 
     TTF_CloseFont(gui_data->font_big);
     TTF_CloseFont(gui_data->font_small);
