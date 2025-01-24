@@ -67,13 +67,33 @@ I order to use write python scripts that communicate with the can interface you 
 
 List of exercises ideas:
 
+### Lock Doors
+- Find the relevant ID and understand the value protocol
+- Write a script that locks the doors forever
+- Write a script that locks the oposite door when the driver tries to lock a door
+
+### Lights
+  - Find the relevant IDs and understand the value protocol
+  - Write a script that disables the lights system
+  - Write a script that switches the lights volume
+    - low lights if the driver turns on the high lights
+    - high lights if the driver turns on the low lights 
+  - Write a script that fully controls the lights system - let the user choose to:
+    1. turn off lights
+    2. turn on low lights
+    3. turn on medium lights
+    4. turn on high lights
+
 ### Signals
-- Write a script that turns off the signals
-- Write a script that switches the signals direction (right if the driver turns left, and left if the driver turns right)
-- Write a script that controls the signals - let the user choose to:
+- Find the relevant ID and understand the value protocol
+- Write a script that disables the signals system
+- Write a script that switches the signals direction
+  - right signal if the driver turns left
+  - left signal if the driver turns right
+- Write a script that fully controls the signals system - let the user choose to:
   1. turn off signals
-  2. turn left
-  3. turn right
+  2. turn on left signal
+  3. turn on right signal
   4. turn on both signals
 
 ### Speed
@@ -84,13 +104,7 @@ List of exercises ideas:
   2. accelerate
   3. decelerate
 
-### Lights
-  - Write a script that turns off the lights
-  - Write a script that controls the lights - let the user choose to:
-    1. turn off lights
-    2. turn on low lights
-    3. turn on medium lights
-    4. turn on high lights
+### Radio
   - Write a script that leaks the radio station number using the lights volume
 
 A solutions directory with solutions has also been provided with this repo.  
