@@ -137,6 +137,28 @@ void draw_radio(gui_data_t *gui_data, radio_status_t *radio_status)
     SDL_DestroyTexture(am_tex);
 }
 
+void draw_doors(gui_data_t *gui_data, doors_status_t *doors_status)
+{    
+    SDL_RenderCopy(gui_data->renderer, gui_data->doors_tex, NULL, &gui_data->doors_rect);
+
+    // if (doors_status->front_left)
+    // {
+    //     SDL_RenderCopy(gui_data->renderer, gui_data->left_door_tex, NULL, &gui_data->front_left_door_rect);
+    // }
+    // if (doors_status->front_right)
+    // {
+    //     SDL_RenderCopy(gui_data->renderer, gui_data->right_door_tex, NULL, &gui_data->front_right_door_rect);
+    // }
+    // if (doors_status->back_left)
+    // {
+    //     SDL_RenderCopy(gui_data->renderer, gui_data->left_door_tex, NULL, &gui_data->back_left_door_rect);
+    // }
+    // if (doors_status->back_right)
+    // {
+    //     SDL_RenderCopy(gui_data->renderer, gui_data->right_door_tex, NULL, &gui_data->back_right_door_rect);
+    // }
+}
+
 void draw(gui_data_t *gui_data, signals_status_t *signal_status, speed_status_t *speed_status, lights_status_t *lights_status, radio_status_t *radio_status, doors_status_t* doors_status)
 {
     SDL_RenderCopy(gui_data->renderer, gui_data->dashboard_tex, NULL, NULL);
@@ -145,6 +167,7 @@ void draw(gui_data_t *gui_data, signals_status_t *signal_status, speed_status_t 
     draw_speed(gui_data, speed_status);
     draw_lights(gui_data, lights_status);
     draw_radio(gui_data, radio_status);
+    draw_doors(gui_data, doors_status);
 
     SDL_RenderPresent(gui_data->renderer);
 }
@@ -276,7 +299,10 @@ gui_data_t setup_gui()
     gui_data.radio_data_rect.y = gui_data.radio_frame_rect.y + 5;
     gui_data.radio_data_rect.w = gui_data.radio_frame_rect.w - 10;
     gui_data.radio_data_rect.h = gui_data.radio_frame_rect.h - 10;
-    // TODO: doors
+    gui_data.doors_rect.x = SCREEN_WIDTH * 0.25
+    gui_data.doors_rect.y = SCREEN_WIDTH * 0.75
+    gui_data.doors_rect.w = doors.w;
+    gui_data.doors_rect.h = doors.h;
 
     SDL_FreeSurface(dashboard);
     SDL_FreeSurface(needle);

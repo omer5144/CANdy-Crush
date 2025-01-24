@@ -43,6 +43,11 @@ typedef struct
   TTF_Font *font_small;
   SDL_Rect radio_frame_rect;
   SDL_Rect radio_data_rect;
+  SDL_Rect doors_rect;
+  SDL_Rect front_left_door_rect;
+  SDL_Rect front_right_door_rect;
+  SDL_Rect back_left_door_rect;
+  SDL_Rect back_right_door_rect;
 } gui_data_t;
 
 gui_data_t setup_gui();
