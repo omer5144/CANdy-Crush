@@ -319,9 +319,8 @@ gui_data_t setup_gui()
     gui_data.back_left_door_rect.y = SCREEN_HEIGHT * 0.85;
     gui_data.back_left_door_rect.w = left_door->w;
     gui_data.back_left_door_rect.h = left_door->h;
-
     gui_data.back_right_door_rect.x = SCREEN_WIDTH * 0.2;
-    gui_data.back_right_door_rect.y = SCREEN_WIDTH * 0.85;
+    gui_data.back_right_door_rect.y = SCREEN_HEIGHT * 0.85;
     gui_data.back_right_door_rect.w = right_door->w;
     gui_data.back_right_door_rect.h = right_door->h;
 
