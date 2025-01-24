@@ -300,27 +300,23 @@ gui_data_t setup_gui()
     gui_data.radio_data_rect.w = gui_data.radio_frame_rect.w - 10;
     gui_data.radio_data_rect.h = gui_data.radio_frame_rect.h - 10;
     gui_data.doors_rect.x = SCREEN_WIDTH * 0.1;
-    gui_data.doors_rect.y = SCREEN_WIDTH * 0.75;
+    gui_data.doors_rect.y = SCREEN_HEIGHT * 0.75;
     gui_data.doors_rect.w = doors->w;
     gui_data.doors_rect.h = doors->h;
-
     gui_data.doors_rect.x = SCREEN_WIDTH * 0.1;
-    gui_data.doors_rect.y = SCREEN_WIDTH * 0.75;
+    gui_data.doors_rect.y = SCREEN_HEIGHT * 0.75;
     gui_data.doors_rect.w = doors->w;
     gui_data.doors_rect.h = doors->h;
-
     gui_data.front_left_door_rect.x = SCREEN_WIDTH * 0.1;
-    gui_data.front_left_door_rect.y = SCREEN_WIDTH * 0.75;
+    gui_data.front_left_door_rect.y = SCREEN_HEIGHT * 0.75;
     gui_data.front_left_door_rect.w = left_door->w;
     gui_data.front_left_door_rect.h = left_door->h;
-
     gui_data.front_right_door_rect.x = SCREEN_WIDTH * 0.2;
-    gui_data.front_right_door_rect.y = SCREEN_WIDTH * 0.75;
+    gui_data.front_right_door_rect.y = SCREEN_HEIGHT * 0.75;
     gui_data.front_right_door_rect.w = right_door->w;
     gui_data.front_right_door_rect.h = right_door->h;
-
     gui_data.back_left_door_rect.x = SCREEN_WIDTH * 0.1;
-    gui_data.back_left_door_rect.y = SCREEN_WIDTH * 0.85;
+    gui_data.back_left_door_rect.y = SCREEN_HEIGHT * 0.85;
     gui_data.back_left_door_rect.w = left_door->w;
     gui_data.back_left_door_rect.h = left_door->h;
 
