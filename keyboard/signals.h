@@ -17,6 +17,13 @@ typedef enum
 	RIGHT_SIGNAL = 2
 } signal_t;
 
+typedef enum
+{
+	LEFT_TURN = -1,
+	NO_TURN = 0,
+	RIGHT_TURN = 1
+} turn_t;
+
 typedef struct
 {
 	signal_t signal;
