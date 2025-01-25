@@ -71,6 +71,7 @@ void main_loop(gui_data_t *gui_data, int sock, pid_t traffic_pid)
 	lights_state_t lights_state = {0, VOLUME_NONE, VOLUME_NONE};
 	radio_state_t radio_state = generate_random_radio();
 	doors_state_t doors_state = {0, 0, 0, 0};
+	int beep_state = 0;
 	int current_time;
 
 	while (running)
@@ -131,7 +132,8 @@ void main_loop(gui_data_t *gui_data, int sock, pid_t traffic_pid)
 					doors_state.is_back_right_door_open = 1 - doors_state.is_back_right_door_open;
 					break;
 				case SDLK_e:
-					send_beep(sock);
+					beep_state = 1;
+					send_beep(sock, beep_state);
 					break;
 				}
 				break;
@@ -153,6 +155,10 @@ void main_loop(gui_data_t *gui_data, int sock, pid_t traffic_pid)
 				case SDLK_KP_2:
 				case SDLK_KP_3:
 					lights_state.new_lights = VOLUME_NONE;
+					break;
+				case SDLK_e:
+					beep_state = 0;
+					send_beep(sock, beep_state);
 					break;
 				}
 				break;
