@@ -19,6 +19,7 @@
 #include "radio.h"
 #include "doors.h"
 #include "gui.h"
+#include "beep.h"
 
 void usage(char *msg)
 {
@@ -128,6 +129,9 @@ void main_loop(gui_data_t *gui_data, int sock, pid_t traffic_pid)
 					break;
 				case SDLK_KP_3:
 					doors_state.is_back_right_door_open = 1 - doors_state.is_back_right_door_open;
+					break;
+				case SDLK_e:
+					send_beep(sock);
 					break;
 				}
 				break;
