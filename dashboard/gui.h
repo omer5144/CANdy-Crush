@@ -33,6 +33,7 @@ typedef struct
   SDL_Texture *doors_tex;
   SDL_Texture *left_door_tex;
   SDL_Texture *right_door_tex;
+  SDL_Texture *beep_tex;
   SDL_Rect speed_rect;
   SDL_Point speed_center_rect;
   SDL_Rect left_signal_rect;
@@ -48,10 +49,11 @@ typedef struct
   SDL_Rect front_right_door_rect;
   SDL_Rect back_left_door_rect;
   SDL_Rect back_right_door_rect;
+  SDL_Rect beep_rect;
 } gui_data_t;
 
 gui_data_t setup_gui();
-void draw(gui_data_t *gui_data, signals_status_t *signal_status, speed_status_t *speed_status, lights_status_t *lights_status, radio_status_t *radio_status, doors_status_t* doors_status);
+void draw(gui_data_t *gui_data, signals_status_t *signal_status, speed_status_t *speed_status, lights_status_t *lights_status, radio_status_t *radio_status, doors_status_t* doors_status, int beep_status);
 void cleanup_gui(gui_data_t *gui_data);
 
 #endif
