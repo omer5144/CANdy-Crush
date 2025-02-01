@@ -132,7 +132,6 @@ void main_loop(gui_data_t *gui_data, int sock, pid_t traffic_pid)
 				switch (event.key.keysym.sym)
 				{
 				case SDLK_UP:
-				case SDLK_SPACE:
 					speed_state.throttle = ACCEL_THROTTLE;
 					break;
 				case SDLK_LEFT:
@@ -178,7 +177,7 @@ void main_loop(gui_data_t *gui_data, int sock, pid_t traffic_pid)
 						doors_lock[3] = 1;
 					}
 					break;
-				case SDLK_e:
+				case SDLK_SPACE:
 					beep_state.is_on = 1;
 					break;
 				case SDLK_EQUALS:
@@ -196,7 +195,6 @@ void main_loop(gui_data_t *gui_data, int sock, pid_t traffic_pid)
 				switch (event.key.keysym.sym)
 				{
 				case SDLK_UP:
-				case SDLK_SPACE:
 					speed_state.throttle = DECCEL_THROTTLE;
 					break;
 				case SDLK_LEFT:
@@ -220,7 +218,7 @@ void main_loop(gui_data_t *gui_data, int sock, pid_t traffic_pid)
 				case SDLK_KP_3:
 					doors_lock[3] = 0;
 					break;
-				case SDLK_e:
+				case SDLK_SPACE:
 					beep_state.is_on = 0;
 					break;
 				}
