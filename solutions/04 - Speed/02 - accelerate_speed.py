@@ -4,7 +4,7 @@ import argparse
 import can
 
 
-SPEED_ID = 0x244
+SPEED_ID = 0x3C4
 DELTA = 10
 
 

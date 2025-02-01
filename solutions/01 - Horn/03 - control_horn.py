@@ -6,9 +6,9 @@ import enum
 import can
 
 
-HORN_ID = 0x65
+HORN_ID = 0xBEE
 NO_BEEP_DATA = b"\x00\x00\x00\x00\x00\x00\x00\x00"
-BEEP_DATA = b"\x00\x00\x00\x00\x00\x00\x00\x01"
+BEEP_DATA = b"\x01\x00\x00\x00\x00\x00\x00\x00"
 
 
 class HornState(enum.IntEnum):
@@ -41,15 +41,29 @@ def control_horn(interface: str) -> None:
                 bus.send(beep)
 
 
-def input_horn() -> None:
+def input_horn(interface: str) -> None:
     global g_horn_state, g_stop
 
+    no_beep = can.Message(
+        arbitration_id=HORN_ID, is_extended_id=False, data=NO_BEEP_DATA
+    )
+    beep = can.Message(arbitration_id=HORN_ID, is_extended_id=False, data=BEEP_DATA)
+
     try:
-        while True:
-            try:
-                g_horn_state = int(input("Enter horn state: (0 - none, 1 - beep):   "))
-            except Exception:
-                print("Invalid input")
+        with can.Bus(
+            channel=interface,
+            bustype="socketcan",
+            can_filters=[{"can_id": HORN_ID, "can_mask": 0xFFE, "extended": False}],
+        ) as bus:
+            while True:
+                try:
+                    g_horn_state = int(input("Enter horn state: (0 - none, 1 - beep):   "))
+                    if g_horn_state == HornState.NO_BEEP:
+                        bus.send(no_beep)
+                    elif g_horn_state == HornState.BEEP:
+                        bus.send(beep)                        
+                except Exception:
+                    print("Invalid input")
     finally:
         g_stop = True
 
@@ -61,7 +75,7 @@ def main() -> None:
 
     try:
         threading.Thread(target=control_horn, args=(args.interface,)).start()
-        input_horn()
+        input_horn(args.interface)
     except KeyboardInterrupt:
         pass
 

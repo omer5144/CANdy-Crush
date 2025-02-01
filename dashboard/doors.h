@@ -4,7 +4,7 @@
 #include <linux/can.h>
 #include <linux/can/raw.h>
 
-#define DOORS_ID 500
+#define DOORS_ID 0x1F4
 #define DOORS_POS 0
 
 typedef struct

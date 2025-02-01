@@ -1,0 +1,8 @@
+Radio Volume ID: 0x28A
+Value: diff from current volume (positive or negative)  
+
+Radio Setup: 0x28B
+Value: first byte key, second and third: AM / FM
+
+Radio prompt ID: 0x28C
+Value: prompt xored with key

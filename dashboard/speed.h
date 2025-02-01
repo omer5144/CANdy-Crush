@@ -4,7 +4,7 @@
 #include <linux/can.h>
 #include <linux/can/raw.h>
 
-#define SPEED_ID 580
+#define SPEED_ID 0x3C4
 #define SPEED_POS 3
 
 typedef struct

@@ -1,0 +1,6 @@
+ID: 0x188
+Value:
+    NO signals: 0
+    Left signal: 1
+    Right signal: 2
+    Both signals: 3

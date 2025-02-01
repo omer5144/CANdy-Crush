@@ -4,7 +4,7 @@
 #include <linux/can.h>
 #include <linux/can/raw.h>
 
-#define SIGNAL_ID 392
+#define SIGNAL_ID 0x188
 #define SIGNAL_POS 0
 
 typedef struct

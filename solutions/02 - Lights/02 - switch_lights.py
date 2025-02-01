@@ -6,7 +6,7 @@ import can
 
 LIGHTS_VOLUME_ID = 0x29B
 LOW_LIGHTS = b"\x01\x00\x00\x00\x00\x00\x00\x00"
-HIGH_LIGHTS = b"\x02\x00\x00\x00\x00\x00\x00\x00"
+HIGH_LIGHTS = b"\x03\x00\x00\x00\x00\x00\x00\x00"
 
 
 def switch_lights(interface: str) -> None:
@@ -14,7 +14,7 @@ def switch_lights(interface: str) -> None:
         arbitration_id=LIGHTS_VOLUME_ID, is_extended_id=False, data=LOW_LIGHTS
     )
     high_lights = can.Message(
-        arbitration_id=HIGH_LIGHTS, is_extended_id=False, data=HIGH_LIGHTS
+        arbitration_id=LIGHTS_VOLUME_ID, is_extended_id=False, data=HIGH_LIGHTS
     )
 
     with can.Bus(

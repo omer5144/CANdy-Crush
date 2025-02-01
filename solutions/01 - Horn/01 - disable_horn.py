@@ -4,7 +4,7 @@ import argparse
 import can
 
 
-HORN_ID = 0x65
+HORN_ID = 0xBEE
 NO_BEEP_DATA = b"\x00\x00\x00\x00\x00\x00\x00\x00"
 
 

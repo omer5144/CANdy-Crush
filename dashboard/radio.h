@@ -6,8 +6,8 @@
 #include <string.h>
 #include <inttypes.h>
 
-#define RADIO_ID 555
-#define RADIO_KEY_ID 556
+#define RADIO_ID 0x28C
+#define RADIO_KEY_ID 0x28B
 #define RADIO_KEY_POS 0
 #define RADIO_TYPE_POS 1
 #define RADIO_SONG_POS 0

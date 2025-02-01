@@ -4,8 +4,8 @@ import argparse
 import can
 
 
-HORN_ID = 0x65
-BEEP_DATA = b"\x00\x00\x00\x00\x00\x00\x00\x01"
+HORN_ID = 0xBEE
+BEEP_DATA = b"\x01\x00\x00\x00\x00\x00\x00\x00"
 
 
 def beep_constantly(interface: str) -> None:

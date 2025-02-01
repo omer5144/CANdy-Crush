@@ -1,0 +1,2 @@
+ID: 0x3C4
+Value: linear function of the speed

@@ -7,7 +7,7 @@
 #include <stdlib.h>
 #include "util.h"
 
-#define SPEED_ID 580
+#define SPEED_ID 0x3C4
 #define DEFAULT_SPEED_POS 3
 #define SPEED_LEN 8
 

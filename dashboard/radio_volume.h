@@ -6,7 +6,7 @@
 #include <string.h>
 #include "util.h"
 
-#define RADIO_VOLUME_ID 650
+#define RADIO_VOLUME_ID 0x28A
 #define RADIO_VOLUME_POSITION 0
 #define RADIO_VOLUME_LEN 4
 #define RADIO_VOLUME_MAX_VALUE 100

@@ -1,0 +1,11 @@
+ID: 0x1F4
+Value:
+    Bit field, each bit for another door
+    
+    Close: 0
+    Open: 1
+
+    Bit #0: Front left door
+    Bit #1: Front right door
+    Bit #2: Back left door
+    Bit #3: Back right door

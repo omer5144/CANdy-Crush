@@ -1,0 +1,2 @@
+Temperature ID: 0x3E7
+Value: temperature in scale of 16 to 34

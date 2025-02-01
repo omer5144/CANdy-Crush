@@ -121,7 +121,8 @@ List of analyze & development exercises:
   4. open/close back right door
 
 ### Radio
-- Find the relevant ID and understand the value protocol
+- Find the relevant IDs and understand the value protocol
+- Write a script that controls the radio volume system - let the user choose the volume
 - Write a script that writes "ARAM" on the screen
 
 ### Air Conditioner

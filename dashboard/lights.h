@@ -4,8 +4,8 @@
 #include <linux/can.h>
 #include <linux/can/raw.h>
 
-#define LIGHTS_IS_ON_ID 666
-#define LIGHTS_VOLUME_ID 667
+#define LIGHTS_IS_ON_ID 0x29A
+#define LIGHTS_VOLUME_ID 0x29B
 #define LIGHTS_POS 0
 
 typedef struct

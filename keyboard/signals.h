@@ -6,7 +6,7 @@
 #include <string.h>
 #include "util.h"
 
-#define SIGNAL_ID 392
+#define SIGNAL_ID 0x188
 #define SIGNAL_POS 0
 #define SIGNAL_LEN 8
 

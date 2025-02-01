@@ -1,0 +1,4 @@
+ID: 0xBEE
+Value:
+    NO beep: 0
+    Beep: 1

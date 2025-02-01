@@ -1,0 +1,10 @@
+On/Off ID: 0x29A
+Value:
+    Off: 0
+    On: 1
+
+Volume ID: 0x29B
+Value:
+    Low: 1
+    Medium: 2
+    High: 3

@@ -149,6 +149,7 @@ int main(int argc, char *argv[])
             break;
         case RADIO_VOLUME_ID:
             update_radio_volume(&msg_data.frame, maxdlen, &radio_volume);
+            break;
         case TEMPERATURE_ID:
             update_temperature(&msg_data.frame, maxdlen, &temperature_status);
             break;

@@ -8,7 +8,7 @@
 #include <inttypes.h>
 #include "util.h"
 
-#define TEMPERATURE_ID 999
+#define TEMPERATURE_ID 0x3E7
 #define TEMPERATURE_POS 0
 #define TEMPERATURE_CHECKSUM_POS (sizeof(float))
 

@@ -6,7 +6,7 @@
 #include <string.h>
 #include "util.h"
 
-#define DOORS_ID 500
+#define DOORS_ID 0x1F4
 #define DOORS_POSITION 0
 #define DOORS_LEN 8
 

@@ -6,7 +6,7 @@
 #include <string.h>
 #include "util.h"
 
-#define BEEP_ID 101
+#define BEEP_ID 0xBEE
 #define BEEP_POSITION 0
 #define BEEP_LEN 8
 
