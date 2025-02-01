@@ -86,10 +86,6 @@ radio_state_t generate_random_radio()
 	memset(radio_state.song_name, 0, sizeof(radio_state.song_name));
 	memcpy(radio_state.song_name, song_name, length);
 	radio_state.song_name_length = length;
-	for (int i = 0; i < length; ++i)
-	{
-		radio_state.song_name[i] ^= radio_state.key;
-	}
 	radio_state.radio_type = rand() % 2;
 
 	return radio_state;

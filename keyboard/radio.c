@@ -1,7 +1,7 @@
 #include "radio.h"
 #include <stdio.h>
 
-void send_radio(int sock, char *song_name, int length)
+void send_radio(int sock, char *song_name, int length, uint8_t key)
 {
 	struct canfd_frame cf;
 
@@ -9,6 +9,10 @@ void send_radio(int sock, char *song_name, int length)
 	cf.can_id = RADIO_ID;
 	cf.len = length;
 	memcpy(cf.data, song_name, length);
+	for (int i = 0; i < length; ++i)
+	{
+		cf.data[i] ^= key;
+	}
 	send_pkt(CAN_MTU, &cf, sock);
 }
 
@@ -29,8 +33,9 @@ void check_radio(int sock, int current_time, radio_state_t *radio_state)
 {
 	if (current_time > radio_state->last_update_time + 2000)
 	{
+		radio_state->key = rand() % 256;
 		send_radio_key(sock, radio_state->radio_type, radio_state->key);
-		send_radio(sock, radio_state->song_name, radio_state->song_name_length);
+		send_radio(sock, radio_state->song_name, radio_state->song_name_length, radio_state->key);
 		radio_state->last_update_time = current_time;
 	}
 }
