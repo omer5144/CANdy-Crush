@@ -167,7 +167,21 @@ void draw_beep(gui_data_t *gui_data, int beep_status)
     }
 }
 
-void draw(gui_data_t *gui_data, signals_status_t *signal_status, speed_status_t *speed_status, lights_status_t *lights_status, radio_status_t *radio_status, doors_status_t* doors_status, int beep_status)
+void draw_radio_volume(gui_data_t *gui_data, int32_t radio_volume) 
+{
+    if (radio_volume)
+    {
+        SDL_RenderCopy(gui_data->renderer, gui_data->radio_volume_icon_tex, NULL, &gui_data->radio_volume_icon_rect);
+        for (int i = 0; i < ceil(((double)radio_volume) / 2.0); i++)
+        {            
+            SDL_Rect custom_volume_value_rect = gui_data->radio_volume_value_rect;
+            custom_volume_value_rect.x = gui_data->radio_volume_value_rect.x + (2 + gui_data->radio_volume_value_rect.w)*i;
+            SDL_RenderCopy(gui_data->renderer, gui_data->radio_volume_value_tex, NULL, &custom_volume_value_rect);
+        }
+    }
+}
+
+void draw(gui_data_t *gui_data, signals_status_t *signal_status, speed_status_t *speed_status, lights_status_t *lights_status, radio_status_t *radio_status, doors_status_t* doors_status, int beep_status, int32_t radio_volume)
 {
     SDL_RenderCopy(gui_data->renderer, gui_data->dashboard_tex, NULL, NULL);
 
@@ -177,6 +191,7 @@ void draw(gui_data_t *gui_data, signals_status_t *signal_status, speed_status_t 
     draw_radio(gui_data, radio_status);
     draw_doors(gui_data, doors_status);
     draw_beep(gui_data, beep_status);
+    draw_radio_volume(gui_data, radio_volume);
 
     SDL_RenderPresent(gui_data->renderer);
 }
@@ -185,7 +200,9 @@ gui_data_t setup_gui()
 {
     gui_data_t gui_data;
     char data_file[DATA_FILE_SIZE];
-    SDL_Surface *dashboard, *needle, *off_left_signal, *off_right_signal, *on_left_signal, *on_right_signal, *low_light, *medium_light, *high_light, *icon, *doors, *left_door, *right_door, *beep;
+    SDL_Surface *dashboard, *needle, *off_left_signal, *off_right_signal, *on_left_signal, *on_right_signal, 
+        *low_light, *medium_light, *high_light, *icon, *doors, *left_door, *right_door, *beep, *radio_volume_icon,
+        *radio_volume_value;
     SDL_SysWMinfo wmInfo;
 
     if (SDL_Init(SDL_INIT_VIDEO) < 0)
@@ -234,9 +251,12 @@ gui_data_t setup_gui()
     left_door = IMG_Load(get_data("left_door.png", data_file));
     right_door = IMG_Load(get_data("right_door.png", data_file));
     beep = IMG_Load(get_data("beep.png", data_file));
+    radio_volume_icon = IMG_Load(get_data("volume_icon.png", data_file));
+    radio_volume_value = IMG_Load(get_data("volume_value.png", data_file));
 
     if (dashboard == NULL || needle == NULL || off_left_signal == NULL || off_right_signal == NULL || on_left_signal == NULL || on_right_signal == NULL ||
-        low_light == NULL || medium_light == NULL || high_light == NULL || icon == NULL || doors == NULL || left_door == NULL || right_door == NULL || beep == NULL)
+        low_light == NULL || medium_light == NULL || high_light == NULL || icon == NULL || doors == NULL || left_door == NULL || right_door == NULL || beep == NULL
+        || radio_volume_icon == NULL || radio_volume_value == NULL)
     {
         perror("IMG_Load");
         goto error;
@@ -270,11 +290,14 @@ gui_data_t setup_gui()
     gui_data.left_door_tex = SDL_CreateTextureFromSurface(gui_data.renderer, left_door);
     gui_data.right_door_tex = SDL_CreateTextureFromSurface(gui_data.renderer, right_door);
     gui_data.beep_tex = SDL_CreateTextureFromSurface(gui_data.renderer, beep);
+    gui_data.radio_volume_icon_tex = SDL_CreateTextureFromSurface(gui_data.renderer, radio_volume_icon);
+    gui_data.radio_volume_value_tex = SDL_CreateTextureFromSurface(gui_data.renderer, radio_volume_value);
 
     if (gui_data.dashboard_tex == NULL || gui_data.needle_tex == NULL || gui_data.off_left_signal_tex == NULL ||
         gui_data.off_right_signal_tex == NULL || gui_data.on_left_signal_tex == NULL || gui_data.on_right_signal_tex == NULL ||
         gui_data.low_light_tex == NULL || gui_data.medium_light_tex == NULL || gui_data.high_light_tex == NULL ||
-        gui_data.doors_tex == NULL || gui_data.left_door_tex == NULL || gui_data.right_door_tex == NULL || gui_data.beep_tex == NULL)
+        gui_data.doors_tex == NULL || gui_data.left_door_tex == NULL || gui_data.right_door_tex == NULL || gui_data.beep_tex == NULL
+        || gui_data.radio_volume_icon_tex == NULL || gui_data.radio_volume_value_tex == NULL)
     {
         perror("SDL_CreateTextureFromSurface");
         goto error;
@@ -334,6 +357,16 @@ gui_data_t setup_gui()
     gui_data.beep_rect.y = SCREEN_HEIGHT * 0.29;
     gui_data.beep_rect.w = beep->w / 4;
     gui_data.beep_rect.h = beep->h / 4;
+
+    gui_data.radio_volume_icon_rect.x = gui_data.radio_data_rect.x * 1.02;
+    gui_data.radio_volume_icon_rect.y = gui_data.radio_data_rect.y * 2.4;
+    gui_data.radio_volume_icon_rect.w = radio_volume_icon->w / 30;
+    gui_data.radio_volume_icon_rect.h = radio_volume_icon->h / 20;
+    gui_data.radio_volume_value_rect.x = gui_data.radio_volume_icon_rect.x * 1.065;
+    gui_data.radio_volume_value_rect.y = gui_data.radio_volume_icon_rect.y * 1;
+    gui_data.radio_volume_value_rect.w = radio_volume_icon->w / 100;
+    gui_data.radio_volume_value_rect.h = radio_volume_icon->h / 18;
+
 
     SDL_FreeSurface(dashboard);
     SDL_FreeSurface(needle);
