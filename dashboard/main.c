@@ -18,6 +18,7 @@
 #include "radio.h"
 #include "doors.h"
 #include "beep.h"
+#include "temperature.h"
 
 void Usage(char *msg)
 {
@@ -61,6 +62,7 @@ int main(int argc, char *argv[])
     radio_status_t radio_status = {0, RADIO_OTHER, "----------"};
     doors_status_t doors_status = {0, 0, 0, 0};
     int beep_status = 0;
+    temperature_status_t temperature_status = {25};
 
     char *songs[] = {"Sugar, Sugar",
                     "Candy",
@@ -163,13 +165,16 @@ int main(int argc, char *argv[])
         case BEEP_ID:
             update_beep(&msg_data.frame, maxdlen, &beep_status);
             break;
+        case TEMPERATURE_ID:
+            update_temperature(&msg_data.frame, maxdlen, &temperature_status);
+            break;
         default:
             is_changed = 0;
         }
 
         if (is_changed)
         {
-            draw(&gui_data, &signal_status, &speed_status, &lights_status, &radio_status, &doors_status, beep_status);
+            draw(&gui_data, &signal_status, &speed_status, &lights_status, &radio_status, &doors_status, beep_status, temperature_status);
         }
     }
 

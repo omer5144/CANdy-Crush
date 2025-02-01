@@ -5,7 +5,7 @@ void update_radio(struct canfd_frame *cf, int maxdlen, radio_status_t *radio_sta
     int len = (cf->len > maxdlen) ? maxdlen : cf->len;
     int index;
 
-    if (len < RADIO_STATION_POS)
+    if (len <= RADIO_STATION_POS)
     {
         return;
     }
