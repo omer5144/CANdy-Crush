@@ -175,7 +175,7 @@ int main(int argc, char *argv[])
 
         if (is_changed)
         {
-            draw(&gui_data, &signal_status, &speed_status, &lights_status, &radio_status, &doors_status, beep_status, temperature_status);
+            draw(&gui_data, &signal_status, &speed_status, &lights_status, &radio_status, &doors_status, beep_status, &temperature_status);
         }
     }
 
