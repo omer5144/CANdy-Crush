@@ -1,32 +1,40 @@
 #include "radio.h"
 
-void update_radio(struct canfd_frame *cf, int maxdlen, radio_status_t *radio_status, char *songs[])
+void update_radio(struct canfd_frame *cf, int maxdlen, radio_status_t *radio_status)
 {
     int len = (cf->len > maxdlen) ? maxdlen : cf->len;
-    int index;
 
-    if (len <= RADIO_STATION_POS)
+    if (cf->can_id == RADIO_KEY_ID)
     {
-        return;
-    }
+        if (len <= RADIO_TYPE_POS + 1)
+        {
+            return;
+        }
 
-    if (strncmp((char *)cf->data + RADIO_TYPE_POS, "FM", 2) == 0)
+        radio_status->key = cf->data[RADIO_KEY_POS];
+        
+        if (strncmp((char *)cf->data + RADIO_TYPE_POS, "FM", 2) == 0)
+        {
+            radio_status->radio_type = RADIO_FM;
+        }
+        else if (strncmp((char *)cf->data + RADIO_TYPE_POS, "AM", 2) == 0)
+        {
+            radio_status->radio_type = RADIO_AM;
+        } 
+    } 
+    else if (cf->can_id == RADIO_ID)
     {
-        radio_status->radio_type = RADIO_FM;
-    }
-    else if (strncmp((char *)cf->data + RADIO_TYPE_POS, "AM", 2) == 0)
-    {
-        radio_status->radio_type = RADIO_AM;
-    }
-    else
-    {
-        radio_status->radio_type = RADIO_OTHER;
-    }
+        if (len > 8)
+        {
+            len = 8;
+        }
 
-    radio_status->station = cf->data[RADIO_STATION_POS];
-    index = radio_status->station - 90;
-    if (0 <= index && index < 20)
-    {
-        radio_status->song_name = songs[index];
+        memset(radio_status->song_name, 0, sizeof(radio_status->song_name));
+        memcpy(radio_status->song_name, cf->data, len);
+
+        for (int i = 0; i < len; ++i)
+        {
+            radio_status->song_name[i] ^= radio_status->key;
+        }
     }
 }
