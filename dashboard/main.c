@@ -10,6 +10,7 @@
 #include <linux/can.h>
 #include <linux/can/raw.h>
 #include <errno.h>
+#include <stddef.h>
 #include "util.h"
 #include "gui.h"
 #include "signals.h"

@@ -55,7 +55,7 @@ typedef struct
   SDL_Rect back_right_door_rect;
   SDL_Rect beep_rect;
   SDL_Rect temperature_rect;
-  SDL_Rect temperature_center_rect;
+  SDL_Point temperature_center_rect;
 } gui_data_t;
 
 gui_data_t setup_gui();
