@@ -20,6 +20,7 @@
 #include "doors.h"
 #include "beep.h"
 #include "temperature.h"
+#include "radio_volume.h"
 
 void Usage(char *msg)
 {
@@ -67,6 +68,7 @@ int main(int argc, char *argv[])
     doors_status_t doors_status = {0, 0, 0, 0};
     int beep_status = 0;
     temperature_status_t temperature_status = {25, 25};
+    int32_t radio_volume = 0;
 
     interface_name = parse_arguments(argc, argv);
     gui_data = setup_gui();
@@ -81,7 +83,7 @@ int main(int argc, char *argv[])
     int nbytes, maxdlen;
     int is_changed = 1;
 
-    draw(&gui_data, &signal_status, &speed_status, &lights_status, &radio_status, &doors_status, beep_status, &temperature_status);
+    draw(&gui_data, &signal_status, &speed_status, &lights_status, &radio_status, &doors_status, beep_status, &temperature_status, radio_volume);
     
     while (running)
     {
@@ -145,6 +147,8 @@ int main(int argc, char *argv[])
         case BEEP_ID:
             update_beep(&msg_data.frame, maxdlen, &beep_status);
             break;
+        case RADIO_VOLUME_ID:
+            update_radio_volume(&msg_data.frame, maxdlen, &radio_volume);
         case TEMPERATURE_ID:
             update_temperature(&msg_data.frame, maxdlen, &temperature_status);
             break;
@@ -158,7 +162,7 @@ int main(int argc, char *argv[])
 
         if (is_changed)
         {
-            draw(&gui_data, &signal_status, &speed_status, &lights_status, &radio_status, &doors_status, beep_status, &temperature_status);
+            draw(&gui_data, &signal_status, &speed_status, &lights_status, &radio_status, &doors_status, beep_status, &temperature_status, radio_volume);
         }
     }
 
