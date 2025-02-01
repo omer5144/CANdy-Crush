@@ -4,7 +4,7 @@
 uint8_t checksum_of(char *temperature, size_t length)
 {
     uint8_t checksum = 0;
-    for (int i = 0; i < length; ++i)
+    for (size_t i = 0; i < length; ++i)
     {
         uint8_t byte = temperature[i];
         while (byte) {
@@ -21,13 +21,13 @@ void update_temperature(struct canfd_frame *cf, int maxdlen, temperature_status_
     double temperature;
     uint8_t checksum;
 
-    if (len <= TEMPERATURE_CHECKSUM_POS)
+    if ((unsigned long long)len <= TEMPERATURE_CHECKSUM_POS)
     {
         return;
     }
 
     checksum = cf->data[TEMPERATURE_CHECKSUM_POS];
-    if (checksum != checksum_of(cf->data, TEMPERATURE_CHECKSUM_POS))
+    if (checksum != checksum_of((char*)cf->data, TEMPERATURE_CHECKSUM_POS))
     {
         return;
     }
