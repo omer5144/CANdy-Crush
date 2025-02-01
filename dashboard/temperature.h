@@ -13,6 +13,7 @@
 typedef struct
 {
     float temperature;
+    float current;
 } temperature_status_t;
 
 uint8_t checksum_of(char *temperature, size_t length);

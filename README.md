@@ -111,7 +111,8 @@ A solutions directory with solutions has also been provided with this repo.
 The binary_search.sh script is used to find a specific command using the binary search algorithm
 
 # TODO
-- Make doors send onky in change
+- Make doors send onkl in change
+- light UI
 
 Images
 ------

@@ -169,7 +169,15 @@ void draw_beep(gui_data_t *gui_data, int beep_status)
 
 void draw_temperature(gui_data_t *gui_data, temperature_status_t *temperature_status)
 {
-    double angle = map(temperature_status->temperature, 16, 34, -90, 90);
+    if (temperature_status->temperature > temperature_status->current && temperature_status->temperature - temperature_status->current > 0.1)
+    {
+        temperature_status->current += 0.1;
+    } else if (temperature_status->temperature < temperature_status->current && temperature_status->temperature - temperature_status->current < 0.1)
+    {
+        temperature_status->current -= 0.1;
+    }
+    
+    double angle = map(temperature_status->current, 16, 34, -90, 90);
 
     SDL_RenderCopy(gui_data->renderer, gui_data->temperature_bar_tex, NULL, &gui_data->temperature_rect);
     SDL_RenderCopyEx(gui_data->renderer, gui_data->temperature_mark_tex, NULL, &gui_data->temperature_rect, angle, &gui_data->temperature_center_rect, SDL_FLIP_NONE);
