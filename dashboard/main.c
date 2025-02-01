@@ -99,7 +99,7 @@ int main(int argc, char *argv[])
     int nbytes, maxdlen;
     int is_changed = 1;
 
-    draw(&gui_data, &signal_status, &speed_status, &lights_status, &radio_status, &doors_status, beep_status);
+    draw(&gui_data, &signal_status, &speed_status, &lights_status, &radio_status, &doors_status, beep_status, &temperature_status);
     
     while (running)
     {
