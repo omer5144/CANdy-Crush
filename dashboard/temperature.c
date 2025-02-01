@@ -38,9 +38,9 @@ void update_temperature(struct canfd_frame *cf, int maxdlen, temperature_status_
         temperature = 16;
     }
 
-    if (temperature > 32)
+    if (temperature > 34)
     {
-        temperature = 32;
+        temperature = 34;
     }
 
     temperature_status->temperature = temperature;

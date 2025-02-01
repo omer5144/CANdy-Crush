@@ -169,17 +169,7 @@ void draw_beep(gui_data_t *gui_data, int beep_status)
 
 void draw_temperature(gui_data_t *gui_data, temperature_status_t *temperature_status)
 {
-    double angle = 0;
-
-    angle = map(temperature_status->temperature, 16, 32, -90, 90);
-    if (angle < -90)
-    {
-        angle = -90;
-    }
-    if (angle > 90)
-    {
-        angle = 90;
-    }
+    double angle = map(temperature_status->temperature, 16, 34, -90, 90);
 
     SDL_RenderCopy(gui_data->renderer, gui_data->temperature_bar_tex, NULL, &gui_data->temperature_rect);
     SDL_RenderCopyEx(gui_data->renderer, gui_data->temperature_mark_tex, NULL, &gui_data->temperature_rect, angle, &gui_data->temperature_center_rect, SDL_FLIP_NONE);
@@ -238,7 +228,7 @@ gui_data_t setup_gui()
         perror("SDL_CreateRenderer");
         goto error;
     }
-    
+
     dashboard = IMG_Load(get_data("dashboard.png", data_file));
     needle = IMG_Load(get_data("needle.png", data_file));
     off_left_signal = IMG_Load(get_data("off_left_signal.png", data_file));
@@ -258,7 +248,7 @@ gui_data_t setup_gui()
 
     if (dashboard == NULL || needle == NULL || off_left_signal == NULL || off_right_signal == NULL || on_left_signal == NULL || on_right_signal == NULL ||
         low_light == NULL || medium_light == NULL || high_light == NULL || icon == NULL || doors == NULL || left_door == NULL || right_door == NULL || beep == NULL ||
-        temperature_bar == NULL || temperature_mark)
+        temperature_bar == NULL || temperature_mark == NULL)
     {
         perror("IMG_Load");
         goto error;
@@ -359,12 +349,12 @@ gui_data_t setup_gui()
     gui_data.beep_rect.y = SCREEN_HEIGHT * 0.29;
     gui_data.beep_rect.w = beep->w / 4;
     gui_data.beep_rect.h = beep->h / 4;
-    gui_data.temperature_rect.x = SCREEN_WIDTH * 0.74;
-    gui_data.temperature_rect.y = SCREEN_HEIGHT * 0.29;
-    gui_data.temperature_rect.w = temperature_bar->w / 4;
-    gui_data.temperature_rect.h = temperature_bar->h / 4;
-    gui_data.temperature_center_rect.x = gui_data.temperature_rect.x + gui_data.temperature_rect.w / 2;
-    gui_data.temperature_center_rect.y = gui_data.temperature_rect.y + gui_data.temperature_rect.h / 2;
+    gui_data.temperature_rect.x = SCREEN_WIDTH * 0.80;
+    gui_data.temperature_rect.y = SCREEN_HEIGHT * 0.45;
+    gui_data.temperature_rect.w = temperature_bar->w / 8;
+    gui_data.temperature_rect.h = temperature_bar->h / 8;
+    gui_data.temperature_center_rect.x = gui_data.temperature_rect.w / 2;
+    gui_data.temperature_center_rect.y = gui_data.temperature_rect.h / 2;
 
     SDL_FreeSurface(dashboard);
     SDL_FreeSurface(needle);

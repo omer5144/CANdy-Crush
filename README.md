@@ -110,6 +110,9 @@ List of exercises ideas:
 A solutions directory with solutions has also been provided with this repo.  
 The binary_search.sh script is used to find a specific command using the binary search algorithm
 
+# TODO
+- Make doors send onky in change
+
 Images
 ------
 
@@ -120,3 +123,4 @@ Images
 ### Keyboard
 
 ![](./data/keyboard_tutorial.png)
+

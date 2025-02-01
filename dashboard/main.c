@@ -63,7 +63,7 @@ int main(int argc, char *argv[])
     radio_status_t radio_status = {0, RADIO_OTHER, "----------"};
     doors_status_t doors_status = {0, 0, 0, 0};
     int beep_status = 0;
-    temperature_status_t temperature_status = {25};
+    temperature_status_t temperature_status = {18};
 
     char *songs[] = {"Sugar, Sugar",
                     "Candy",
