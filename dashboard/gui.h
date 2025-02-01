@@ -10,6 +10,7 @@
 #include "lights.h"
 #include "radio.h"
 #include "doors.h"
+#include "temperature.h"
 
 #define DATA_DIR "./data/"
 #define DATA_FILE_SIZE 2048
@@ -34,6 +35,9 @@ typedef struct
   SDL_Texture *left_door_tex;
   SDL_Texture *right_door_tex;
   SDL_Texture *beep_tex;
+  SDL_Texture *temperature_bar_tex;
+  SDL_Texture *temperature_mark_tex;
+
   SDL_Rect speed_rect;
   SDL_Point speed_center_rect;
   SDL_Rect left_signal_rect;
@@ -50,10 +54,12 @@ typedef struct
   SDL_Rect back_left_door_rect;
   SDL_Rect back_right_door_rect;
   SDL_Rect beep_rect;
+  SDL_Rect temperature_rect;
+  SDL_Point temperature_center_rect;
 } gui_data_t;
 
 gui_data_t setup_gui();
-void draw(gui_data_t *gui_data, signals_status_t *signal_status, speed_status_t *speed_status, lights_status_t *lights_status, radio_status_t *radio_status, doors_status_t* doors_status, int beep_status);
+void draw(gui_data_t *gui_data, signals_status_t *signal_status, speed_status_t *speed_status, lights_status_t *lights_status, radio_status_t *radio_status, doors_status_t* doors_status, int beep_status, temperature_status_t *temperature_status);
 void cleanup_gui(gui_data_t *gui_data);
 
 #endif

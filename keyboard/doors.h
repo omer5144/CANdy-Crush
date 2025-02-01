@@ -24,6 +24,7 @@ typedef struct
 	int is_front_right_door_open;
 	int is_back_left_door_open;
 	int is_back_right_door_open;
+	int last_bitfield;
 } doors_state_t;
 
 void check_doors(int sock, doors_state_t *doors_state);
