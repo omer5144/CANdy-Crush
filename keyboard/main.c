@@ -107,6 +107,7 @@ void main_loop(gui_data_t *gui_data, int sock, pid_t traffic_pid)
 	beep_state_t beep_state = {0, 0};
 	temperature_state_t temperature_state = {TEMPERATURE_NONE, TEMPERATURE_NONE};
 	int current_time;
+	int doors_lock[4] = {0, 0, 0, 0};
 
 	while (running)
 	{
@@ -154,16 +155,32 @@ void main_loop(gui_data_t *gui_data, int sock, pid_t traffic_pid)
 					lights_state.new_lights = VOLUME_HIGH;
 					break;
 				case SDLK_KP_7:
-					doors_state.is_front_left_door_open = 1 - doors_state.is_front_left_door_open;
+					if (doors_lock[0] == 0)
+					{
+						doors_state.is_front_left_door_open = 1 - doors_state.is_front_left_door_open;
+						doors_lock[0] = 1;
+					}
 					break;
 				case SDLK_KP_9:
-					doors_state.is_front_right_door_open = 1 - doors_state.is_front_right_door_open;
+					if (doors_lock[1] == 0)
+					{
+						doors_state.is_front_right_door_open = 1 - doors_state.is_front_right_door_open;
+						doors_lock[1] = 1;
+					}
 					break;
 				case SDLK_KP_1:
-					doors_state.is_back_left_door_open = 1 - doors_state.is_back_left_door_open;
+					if (doors_lock[2] == 0)
+					{
+						doors_state.is_back_left_door_open = 1 - doors_state.is_back_left_door_open;
+						doors_lock[2] = 1;
+					}
 					break;
 				case SDLK_KP_3:
-					doors_state.is_back_right_door_open = 1 - doors_state.is_back_right_door_open;
+					if (doors_lock[3] == 0)
+					{
+						doors_state.is_back_right_door_open = 1 - doors_state.is_back_right_door_open;
+						doors_lock[3] = 1;
+					}
 					break;
 				case SDLK_e:
 					beep_state.is_on = 1;
@@ -193,10 +210,19 @@ void main_loop(gui_data_t *gui_data, int sock, pid_t traffic_pid)
 				case SDLK_1:
 				case SDLK_2:
 				case SDLK_3:
-				case SDLK_KP_1:
-				case SDLK_KP_2:
-				case SDLK_KP_3:
 					lights_state.new_lights = VOLUME_NONE;
+					break;
+				case SDLK_KP_7:
+					doors_lock[0] = 0;
+					break;
+				case SDLK_KP_9:
+					doors_lock[1] = 0;
+					break;
+				case SDLK_KP_1:
+					doors_lock[2] = 0;
+					break;
+				case SDLK_KP_3:
+					doors_lock[3] = 0;
 					break;
 				case SDLK_e:
 					beep_state.is_on = 0;
