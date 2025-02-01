@@ -21,7 +21,7 @@ typedef enum
 
 typedef struct
 {
-    char song_name[21];
+    char song_name[9];
     uint8_t key;
     radio_type_t radio_type;
 } radio_status_t;

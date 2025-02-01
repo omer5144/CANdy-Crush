@@ -24,15 +24,15 @@ void update_radio(struct canfd_frame *cf, int maxdlen, radio_status_t *radio_sta
     } 
     else if (cf->can_id == RADIO_ID)
     {
-        if (len > 20)
+        if (len > 8)
         {
-            len = 20
+            len = 8;
         }
 
+        memset(radio_status->song_name, 0, sizeof(radio_status->song_name));
         memcpy(radio_status->song_name, cf->data, len);
-        radio_status->song_name[len] = 0;
 
-        for (size_t i = 0; i < len; ++i)
+        for (int i = 0; i < len; ++i)
         {
             radio_status->song_name[i] ^= radio_status->key;
         }

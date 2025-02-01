@@ -54,32 +54,39 @@ char *parse_arguments(int argc, char *argv[])
 radio_state_t generate_random_radio()
 {
 	radio_state_t radio_state;
-    char *songs[] = {"Sugar, Sugar",
-                    "Candy",
-                    "Candyman",
-                    "Lollipop",
-                    "I Want Candy",
-                    "Candy Shop",
-                    "Candy Everybody Wants",
-                    "Candy Kisses",
-                    "Candy Says",
-                    "Candy Girl",
-                    "Candy Rain",
-                    "Cotton Candy",
-                    "Candy Store Rock",
-                    "Rock Candy",
-                    "Candy Walls",
-                    "Candy's Room",
-                    "Candy-O",
-                    "Candy Perfume Girl",
-                    "Candy's Going Bad",
-                    "Candyman Blues"};
+    char *songs[] = {
+		"Skittles",
+		"Twix",
+		"KitKat",
+		"Snickers",
+		"Reese's",
+		"M&M's",
+		"MilkyWay",
+		"Hershey",
+		"Rolo",
+		"Smarties",
+		"Crunch",
+		"Mentos",
+		"Bounty",
+		"AirHeads",
+		"Pez",
+		"DumDums",
+		"Trident",
+		"Andes",
+		"Goobers",
+	};
+	char *song_name;
+	int length;
 
 	srand(time(NULL));
 	radio_state.last_update_time = 0;
 	radio_state.key = rand() % 256;
-	radio_state.song_name = songs[rand() % 20]
-	for (size_t i = 0; i < strlen(radio_state.song_name); ++i)
+	song_name = songs[rand() % 19];
+	length = strlen(song_name);
+	memset(radio_state.song_name, 0, sizeof(radio_state.song_name));
+	memcpy(radio_state.song_name, song_name, length);
+	radio_state.song_name_length = length;
+	for (int i = 0; i < length; ++i)
 	{
 		radio_state.song_name[i] ^= radio_state.key;
 	}

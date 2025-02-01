@@ -8,6 +8,7 @@
 #include "util.h"
 
 #define RADIO_ID 555
+#define RADIO_LEN 8
 #define RADIO_KEY_ID 556
 #define RADIO_KEY_POS 0
 #define RADIO_TYPE_POS 1
@@ -22,8 +23,9 @@ typedef enum
 
 typedef struct
 {
+	char song_name[9];
+	int song_name_length;
 	radio_type_t radio_type;
-	char *song_name;
 	uint8_t key;
 	int last_update_time;
 } radio_state_t;
