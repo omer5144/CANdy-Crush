@@ -10,6 +10,12 @@
 #define BEEP_POSITION 0
 #define BEEP_LEN 8
 
-void send_beep(int sock, int beep_state);
+typedef struct
+{
+	int is_on;
+    int last_is_on;
+} beep_state_t;
+
+void check_beep(int sock, beep_state_t *beep_state);
 
 #endif

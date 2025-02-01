@@ -20,6 +20,7 @@
 #include "doors.h"
 #include "gui.h"
 #include "beep.h"
+#include "temperature.h"
 
 void usage(char *msg)
 {
@@ -70,8 +71,9 @@ void main_loop(gui_data_t *gui_data, int sock, pid_t traffic_pid)
 	signal_state_t signal_state = {0, 0, 0};
 	lights_state_t lights_state = {0, VOLUME_NONE, VOLUME_NONE};
 	radio_state_t radio_state = generate_random_radio();
-	doors_state_t doors_state = {0, 0, 0, 0};
-	int beep_state = 0;
+	doors_state_t doors_state = {0, 0, 0, 0, 0};
+	beep_state_t beep_state = {0, 0};
+	temperature_state_t temperature_state = {TEMPERATURE_NONE, TEMPERATURE_NONE};
 	int current_time;
 
 	while (running)
@@ -132,8 +134,16 @@ void main_loop(gui_data_t *gui_data, int sock, pid_t traffic_pid)
 					doors_state.is_back_right_door_open = 1 - doors_state.is_back_right_door_open;
 					break;
 				case SDLK_e:
-					beep_state = 1;
-					send_beep(sock, beep_state);
+					beep_state.is_on = 1;
+					break;
+				case SDLK_EQUALS:
+					temperature_state.temperature = TEMPERATURE_HOT;
+					break;
+				case SDLK_MINUS:
+					temperature_state.temperature = TEMPERATURE_COLD;
+					break;
+				case SDLK_0:
+					temperature_state.temperature = TEMPERATURE_NONE;
 					break;
 				}
 				break;
@@ -157,8 +167,7 @@ void main_loop(gui_data_t *gui_data, int sock, pid_t traffic_pid)
 					lights_state.new_lights = VOLUME_NONE;
 					break;
 				case SDLK_e:
-					beep_state = 0;
-					send_beep(sock, beep_state);
+					beep_state.is_on = 0;
 					break;
 				}
 				break;
@@ -170,6 +179,8 @@ void main_loop(gui_data_t *gui_data, int sock, pid_t traffic_pid)
 		check_lights(sock, &lights_state);
 		check_radio(sock, current_time, &radio_state);
 		check_doors(sock, &doors_state);
+		check_beep(sock, &beep_state);
+		check_temperature(sock, &temperature_state);
 		SDL_Delay(5);
 	}
 }
