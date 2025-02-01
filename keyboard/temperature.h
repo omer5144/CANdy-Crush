@@ -22,6 +22,7 @@ typedef enum
 typedef struct
 {
     temperature_volume_t temperature;
+    temperature_volume_t last_temperature;
 } temperature_state_t;
 
 void check_temperature(int sock, temperature_state_t *temperature_state);

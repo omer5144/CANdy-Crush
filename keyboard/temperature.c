@@ -19,6 +19,12 @@ void check_temperature(int sock, temperature_state_t *temperature_state)
 	float temperature = 25;
 	struct canfd_frame cf;
 
+	if (temperature_state->temperature == temperature_state->last_temperature)
+	{
+		return;
+	}
+	temperature_state->last_temperature = temperature_state->temperature;
+
 	if (temperature_state->temperature == TEMPERATURE_COLD)
 	{
 		temperature = 16;
