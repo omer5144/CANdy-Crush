@@ -7,8 +7,10 @@
 #include <inttypes.h>
 
 #define RADIO_ID 555
-#define RADIO_TYPE_POS 0
-#define RADIO_STATION_POS 2
+#define RADIO_KEY_ID 556
+#define RADIO_KEY_POS 0
+#define RADIO_TYPE_POS 1
+#define RADIO_SONG_POS 0
 
 typedef enum
 {
@@ -19,11 +21,11 @@ typedef enum
 
 typedef struct
 {
-    uint8_t station;
+    char song_name[21];
+    uint8_t key;
     radio_type_t radio_type;
-    char *song_name;
 } radio_status_t;
 
-void update_radio(struct canfd_frame *cf, int maxdlen, radio_status_t *radio_status, char *songs[]);
+void update_radio(struct canfd_frame *cf, int maxdlen, radio_status_t *radio_status);
 
 #endif
