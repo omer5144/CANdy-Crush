@@ -4,6 +4,7 @@
 #include <linux/can.h>
 #include <linux/can/raw.h>
 #include <stddef.h>
+#include <inttypes.h>
 
 #define TEMPERATURE_ID 999
 #define TEMPERATURE_POS 0
