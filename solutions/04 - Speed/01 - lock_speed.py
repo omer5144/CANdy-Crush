@@ -7,22 +7,27 @@ import can
 SPEED_ID = 0x244
 
 
-g_speed = b'\x00\x00\x00\x00\x00\x00\x00\x00'
+g_speed = b"\x00\x00\x00\x00\x00\x00\x00\x00"
 
 
 def lock_speed(interface: str) -> None:
     global g_speed
 
-    with can.Bus(channel=interface, bustype='socketcan', can_filters=[{"can_id": SPEED_ID, "can_mask": 0Xfff, "extended": False}]) as bus:
+    with can.Bus(
+        channel=interface,
+        bustype="socketcan",
+        can_filters=[{"can_id": SPEED_ID, "can_mask": 0xFFF, "extended": False}],
+    ) as bus:
         g_speed = bus.recv()
 
         while True:
             bus.recv()
             bus.send(g_speed)
 
+
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument('interface')
+    parser.add_argument("interface")
     args = parser.parse_args()
 
     try:
@@ -31,6 +36,5 @@ def main() -> None:
         pass
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
-
