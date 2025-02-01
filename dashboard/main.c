@@ -10,6 +10,7 @@
 #include <linux/can.h>
 #include <linux/can/raw.h>
 #include <errno.h>
+#include <stddef.h>
 #include "util.h"
 #include "gui.h"
 #include "signals.h"
@@ -18,6 +19,7 @@
 #include "radio.h"
 #include "doors.h"
 #include "beep.h"
+#include "temperature.h"
 #include "radio_volume.h"
 
 void Usage(char *msg)
@@ -59,31 +61,14 @@ int main(int argc, char *argv[])
     signals_status_t signal_status = {0, 0};
     speed_status_t speed_status = {0};
     lights_status_t lights_status = {0, 0};
-    radio_status_t radio_status = {0, RADIO_OTHER, "----------"};
+    radio_status_t radio_status;
+    memcpy(radio_status.song_name, "----------", 11);
+    radio_status.key = 0;
+    radio_status.radio_type = RADIO_OTHER;
     doors_status_t doors_status = {0, 0, 0, 0};
     int beep_status = 0;
+    temperature_status_t temperature_status = {25, 25};
     int32_t radio_volume = 0;
-
-    char *songs[] = {"Sugar, Sugar",
-                    "Candy",
-                    "Candyman",
-                    "Lollipop",
-                    "I Want Candy",
-                    "Candy Shop",
-                    "Candy Everybody Wants",
-                    "Candy Kisses",
-                    "Candy Says",
-                    "Candy Girl",
-                    "Candy Rain",
-                    "Cotton Candy",
-                    "Candy Store Rock",
-                    "Rock Candy",
-                    "Candy Walls",
-                    "Candy's Room",
-                    "Candy-O",
-                    "Candy Perfume Girl",
-                    "Candy's Going Bad",
-                    "Candyman Blues"};
 
     interface_name = parse_arguments(argc, argv);
     gui_data = setup_gui();
@@ -98,7 +83,7 @@ int main(int argc, char *argv[])
     int nbytes, maxdlen;
     int is_changed = 1;
 
-    draw(&gui_data, &signal_status, &speed_status, &lights_status, &radio_status, &doors_status, beep_status, radio_volume);
+    draw(&gui_data, &signal_status, &speed_status, &lights_status, &radio_status, &doors_status, beep_status, &temperature_status, radio_volume);
     
     while (running)
     {
@@ -156,9 +141,6 @@ int main(int argc, char *argv[])
         case LIGHTS_VOLUME_ID:
             update_lights(&msg_data.frame, maxdlen, &lights_status);
             break;
-        case RADIO_ID:
-            update_radio(&msg_data.frame, maxdlen, &radio_status, songs);
-            break;
         case DOORS_ID:
             update_doors(&msg_data.frame, maxdlen, &doors_status);
             break;
@@ -167,6 +149,12 @@ int main(int argc, char *argv[])
             break;
         case RADIO_VOLUME_ID:
             update_radio_volume(&msg_data.frame, maxdlen, &radio_volume);
+        case TEMPERATURE_ID:
+            update_temperature(&msg_data.frame, maxdlen, &temperature_status);
+            break;
+        case RADIO_ID:
+        case RADIO_KEY_ID:
+            update_radio(&msg_data.frame, maxdlen, &radio_status);
             break;
         default:
             is_changed = 0;
@@ -174,7 +162,7 @@ int main(int argc, char *argv[])
 
         if (is_changed)
         {
-            draw(&gui_data, &signal_status, &speed_status, &lights_status, &radio_status, &doors_status, beep_status, radio_volume);
+            draw(&gui_data, &signal_status, &speed_status, &lights_status, &radio_status, &doors_status, beep_status, &temperature_status, radio_volume);
         }
     }
 

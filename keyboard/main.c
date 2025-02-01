@@ -20,6 +20,7 @@
 #include "doors.h"
 #include "gui.h"
 #include "beep.h"
+#include "temperature.h"
 
 void usage(char *msg)
 {
@@ -53,11 +54,39 @@ char *parse_arguments(int argc, char *argv[])
 radio_state_t generate_random_radio()
 {
 	radio_state_t radio_state;
+    char *songs[] = {
+		"Skittles",
+		"Twix",
+		"KitKat",
+		"Snickers",
+		"Reese's",
+		"M&M's",
+		"MilkyWay",
+		"Hershey",
+		"Rolo",
+		"Smarties",
+		"Crunch",
+		"Mentos",
+		"Bounty",
+		"AirHeads",
+		"Pez",
+		"DumDums",
+		"Trident",
+		"Andes",
+		"Goobers",
+	};
+	char *song_name;
+	int length;
 
 	srand(time(NULL));
 	radio_state.last_update_time = 0;
+	radio_state.key = rand() % 256;
+	song_name = songs[rand() % 19];
+	length = strlen(song_name);
+	memset(radio_state.song_name, 0, sizeof(radio_state.song_name));
+	memcpy(radio_state.song_name, song_name, length);
+	radio_state.song_name_length = length;
 	radio_state.radio_type = rand() % 2;
-	radio_state.station = (rand() % 20) + 90;
 
 	return radio_state;
 }
@@ -70,9 +99,11 @@ void main_loop(gui_data_t *gui_data, int sock, pid_t traffic_pid)
 	signal_state_t signal_state = {0, 0, 0};
 	lights_state_t lights_state = {0, VOLUME_NONE, VOLUME_NONE};
 	radio_state_t radio_state = generate_random_radio();
-	doors_state_t doors_state = {0, 0, 0, 0};
-	int beep_state = 0;
+	doors_state_t doors_state = {0, 0, 0, 0, 0};
+	beep_state_t beep_state = {0, 0};
+	temperature_state_t temperature_state = {TEMPERATURE_NONE, TEMPERATURE_NONE};
 	int current_time;
+	int doors_lock[4] = {0, 0, 0, 0};
 
 	while (running)
 	{
@@ -101,7 +132,6 @@ void main_loop(gui_data_t *gui_data, int sock, pid_t traffic_pid)
 				switch (event.key.keysym.sym)
 				{
 				case SDLK_UP:
-				case SDLK_SPACE:
 					speed_state.throttle = ACCEL_THROTTLE;
 					break;
 				case SDLK_LEFT:
@@ -120,20 +150,44 @@ void main_loop(gui_data_t *gui_data, int sock, pid_t traffic_pid)
 					lights_state.new_lights = VOLUME_HIGH;
 					break;
 				case SDLK_KP_7:
-					doors_state.is_front_left_door_open = 1 - doors_state.is_front_left_door_open;
+					if (doors_lock[0] == 0)
+					{
+						doors_state.is_front_left_door_open = 1 - doors_state.is_front_left_door_open;
+						doors_lock[0] = 1;
+					}
 					break;
 				case SDLK_KP_9:
-					doors_state.is_front_right_door_open = 1 - doors_state.is_front_right_door_open;
+					if (doors_lock[1] == 0)
+					{
+						doors_state.is_front_right_door_open = 1 - doors_state.is_front_right_door_open;
+						doors_lock[1] = 1;
+					}
 					break;
 				case SDLK_KP_1:
-					doors_state.is_back_left_door_open = 1 - doors_state.is_back_left_door_open;
+					if (doors_lock[2] == 0)
+					{
+						doors_state.is_back_left_door_open = 1 - doors_state.is_back_left_door_open;
+						doors_lock[2] = 1;
+					}
 					break;
 				case SDLK_KP_3:
-					doors_state.is_back_right_door_open = 1 - doors_state.is_back_right_door_open;
+					if (doors_lock[3] == 0)
+					{
+						doors_state.is_back_right_door_open = 1 - doors_state.is_back_right_door_open;
+						doors_lock[3] = 1;
+					}
 					break;
-				case SDLK_e:
-					beep_state = 1;
-					send_beep(sock, beep_state);
+				case SDLK_SPACE:
+					beep_state.is_on = 1;
+					break;
+				case SDLK_EQUALS:
+					temperature_state.temperature = TEMPERATURE_HOT;
+					break;
+				case SDLK_MINUS:
+					temperature_state.temperature = TEMPERATURE_COLD;
+					break;
+				case SDLK_0:
+					temperature_state.temperature = TEMPERATURE_NONE;
 					break;
 				}
 				break;
@@ -141,7 +195,6 @@ void main_loop(gui_data_t *gui_data, int sock, pid_t traffic_pid)
 				switch (event.key.keysym.sym)
 				{
 				case SDLK_UP:
-				case SDLK_SPACE:
 					speed_state.throttle = DECCEL_THROTTLE;
 					break;
 				case SDLK_LEFT:
@@ -151,14 +204,22 @@ void main_loop(gui_data_t *gui_data, int sock, pid_t traffic_pid)
 				case SDLK_1:
 				case SDLK_2:
 				case SDLK_3:
-				case SDLK_KP_1:
-				case SDLK_KP_2:
-				case SDLK_KP_3:
 					lights_state.new_lights = VOLUME_NONE;
 					break;
-				case SDLK_e:
-					beep_state = 0;
-					send_beep(sock, beep_state);
+				case SDLK_KP_7:
+					doors_lock[0] = 0;
+					break;
+				case SDLK_KP_9:
+					doors_lock[1] = 0;
+					break;
+				case SDLK_KP_1:
+					doors_lock[2] = 0;
+					break;
+				case SDLK_KP_3:
+					doors_lock[3] = 0;
+					break;
+				case SDLK_SPACE:
+					beep_state.is_on = 0;
 					break;
 				}
 				break;
@@ -170,6 +231,8 @@ void main_loop(gui_data_t *gui_data, int sock, pid_t traffic_pid)
 		check_lights(sock, &lights_state);
 		check_radio(sock, current_time, &radio_state);
 		check_doors(sock, &doors_state);
+		check_beep(sock, &beep_state);
+		check_temperature(sock, &temperature_state);
 		SDL_Delay(5);
 	}
 }

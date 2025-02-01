@@ -20,5 +20,11 @@ void check_doors(int sock, doors_state_t *doors_state)
 		(doors_state->is_back_right_door_open << 3)
 	);
 
+	if (doors_state->last_bitfield == doors_bitfield)
+	{
+		return;
+	}
+	doors_state->last_bitfield = doors_bitfield;
+
 	send_doors(sock, doors_bitfield);
 }
