@@ -18,6 +18,7 @@ def lock_doors(interface: str) -> None:
         bustype="socketcan",
         can_filters=[{"can_id": DOORS_ID, "can_mask": 0xFFF, "extended": False}],
     ) as bus:
+        bus.send(lock)
         while True:
             bus.recv()
             bus.send(lock)
