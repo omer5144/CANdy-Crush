@@ -41,7 +41,7 @@ char *parse_arguments(int argc, char *argv[], int *is_random)
 		switch (opt)
 		{
 		case 'r':
-			*is_random = 1
+			*is_random = 1;
 			break;
 		case 'h':
 		case '?':
