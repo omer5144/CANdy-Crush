@@ -10,7 +10,7 @@ void kill_child(int sig)
 	}
 }
 
-pid_t create_can_traffic_process(char *interface_name, int is_random)
+pid_t create_can_traffic_process(char *interface_name, int is_log)
 {
 	char can2can[50];
 	int sock;
@@ -24,7 +24,7 @@ pid_t create_can_traffic_process(char *interface_name, int is_random)
 	}
 	else if (traffic_pid == 0)
 	{
-		if (!is_random)
+		if (is_log)
 		{
 			snprintf(can2can, 49, "%s=can0", interface_name);
 			if (execlp("canplayer", "canplayer", "-I", CAN_TRAFFIC_FILE_PATH, "-l", "i", can2can, NULL) == -1)
@@ -93,7 +93,7 @@ void send_random_can_message(int sock) {
 	struct canfd_frame cf;
 
 	memset(&cf, 0, sizeof(cf));
-    cf.can_id = rand() % 0x700 + 0x100;
+    cf.can_id = rand() % 30 + 0x100;
     cf.len = rand() % 9;
     for (int i = 0; i < cf.len; i++) {
         cf.data[i] = rand() % 256;
