@@ -5,7 +5,7 @@ import can
 
 
 DOORS_ID = 0x1F4
-UNLOCK_DOORS_DATA = b"\x00\x00\x00\x00\x00\x00\x00\x00"
+UNLOCK_DOORS_DATA = b"\x0f\x00\x00\x00\x00\x00\x00\x00"
 
 
 def unlock_doors(interface: str) -> None:
