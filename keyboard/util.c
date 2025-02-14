@@ -14,6 +14,7 @@ pid_t create_can_traffic_process(char *interface_name, int is_log)
 {
 	char can2can[50];
 	int sock;
+	int r;
 	struct canfd_frame cf;
 	random_option_t options[] = {
 		{0x166, 4, 4},
