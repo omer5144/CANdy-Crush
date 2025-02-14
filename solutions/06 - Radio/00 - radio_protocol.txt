@@ -1,5 +1,5 @@
 Radio Volume ID: 0x28A
-Value: diff from current volume (positive or negative)  
+Value: diff from current volume (positive or negative) in 4 bytes representation little endian
 
 Radio Setup: 0x28B
 Value: first byte key, second and third: AM / FM
