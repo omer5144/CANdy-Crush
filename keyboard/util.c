@@ -24,7 +24,7 @@ pid_t create_can_traffic_process(char *interface_name, int is_random)
 	}
 	else if (traffic_pid == 0)
 	{
-		if (is_random)
+		if (!is_random)
 		{
 			snprintf(can2can, 49, "%s=can0", interface_name);
 			if (execlp("canplayer", "canplayer", "-I", CAN_TRAFFIC_FILE_PATH, "-l", "i", can2can, NULL) == -1)
