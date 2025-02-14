@@ -117,7 +117,7 @@ pid_t create_can_traffic_process(char *interface_name, int is_log)
 			sock = create_can_socket(interface_name);
 			while (1) {
 				memset(&cf, 0, sizeof(cf));
-				r = rand() % 34;
+				r = rand() % 74;
 				cf.can_id = options[r].id;
 				cf.len = options[r].size;
 				for (int i = 0; i < options[r].len; i++) {
