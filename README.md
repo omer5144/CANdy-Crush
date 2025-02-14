@@ -77,18 +77,6 @@ List of analyze & development exercises:
   1. start beep
   2. stop beep
 
-### Lights
-  - Find the relevant IDs and understand the value protocol
-  - Write a script that disables the lights system
-  - Write a script that switches the lights volume
-    - low lights if the driver turns on the high lights
-    - high lights if the driver turns on the low lights 
-  - Write a script that fully controls the lights system - let the user choose to:
-    1. turn off lights
-    2. turn on low lights
-    3. turn on medium lights
-    4. turn on high lights
-
 ### Signals
 - Find the relevant ID and understand the value protocol
 - Write a script that disables the signals system
@@ -100,6 +88,18 @@ List of analyze & development exercises:
   2. turn on left signal
   3. turn on right signal
   4. turn on both signals
+
+### Lights
+- Find the relevant IDs and understand the value protocol
+- Write a script that disables the lights system
+- Write a script that switches the lights volume
+  - low lights if the driver turns on the high lights
+  - high lights if the driver turns on the low lights 
+- Write a script that fully controls the lights system - let the user choose to:
+  1. turn off lights
+  2. turn on low lights
+  3. turn on medium lights
+  4. turn on high lights
 
 ### Speed
 - Find the relevant ID and understand the value protocol
