@@ -113,7 +113,7 @@ List of analyze & development exercises:
 ### Doors
 - Find the relevant ID and understand the value protocol
 - Write a script that locks the doors forever
-- Write a script that locks the oposite door when the driver tries to lock a door
+- Write a script that unlocks the doors forever
 - Write a script that controls the doors system - let the user choose to: 
   1. open/close front left door
   2. open/close front right door

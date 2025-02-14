@@ -45,6 +45,14 @@ def input_doors(interface: str) -> None:
         ) as bus:
             while True:
                 try:
+                    bus.send(
+                        can.Message(
+                            arbitration_id=DOORS_ID,
+                            is_extended_id=False,
+                            data=g_doors_state.to_bytes(1, "big") + BASE_DATA,
+                        )
+                    )
+
                     g_doors_state ^= (
                         1
                         << int(
@@ -53,14 +61,6 @@ def input_doors(interface: str) -> None:
                             )
                         )
                     ) % 16
-
-                    bus.send(
-                        can.Message(
-                            arbitration_id=DOORS_ID,
-                            is_extended_id=False,
-                            data=g_doors_state.to_bytes(1, "big") + BASE_DATA,
-                        )
-                    )
 
                 except Exception:
                     print("Invalid input")
