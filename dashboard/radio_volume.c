@@ -8,10 +8,10 @@ void update_radio_volume(struct canfd_frame *cf, int maxdlen, int *radio_volume)
         return;
     }
 
-	int volume_diff = (int32_t)(cf->data[0]) |
-                       ((int32_t)cf->data[1] << 8) |
-                       ((int32_t)cf->data[2] << 16) |
-                       ((int32_t)cf->data[3] << 24);
+	int volume_diff = (int32_t)(cf->data[3]) |
+                       ((int32_t)cf->data[2] << 8) |
+                       ((int32_t)cf->data[1] << 16) |
+                       ((int32_t)cf->data[0] << 24);
 
 	if (volume_diff < -(RADIO_VOLUME_MAX_VALUE)) {
 		volume_diff = -(RADIO_VOLUME_MAX_VALUE);

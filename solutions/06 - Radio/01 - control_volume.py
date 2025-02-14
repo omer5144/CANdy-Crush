@@ -24,7 +24,7 @@ def input_volume(interface: str) -> None:
                         can.Message(
                             arbitration_id=VOLUME_ID,
                             is_extended_id=False,
-                            data=volume.to_bytes(4, "little", signed=True),
+                            data=volume.to_bytes(4, "big", signed=True),
                         )
                     )
 
