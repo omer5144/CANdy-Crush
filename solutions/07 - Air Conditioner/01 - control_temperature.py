@@ -30,7 +30,7 @@ def input_temperature(interface: str) -> None:
         ) as bus:
             while True:
                 try:
-                    temperature = struct.pack("f", int(input("Enter temperature:   ")))
+                    temperature = struct.pack("f", float(input("Enter temperature:   ")))
 
                     bus.send(
                         can.Message(
