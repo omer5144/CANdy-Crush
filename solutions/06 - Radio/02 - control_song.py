@@ -48,6 +48,7 @@ def input_song(interface: str) -> None:
             while True:
                 try:
                     g_song_state = input("Enter song:   ")
+                    assert len(g_song_state) <= 8
                 except Exception:
                     print("Invalid input")
     finally:
