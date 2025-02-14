@@ -19,7 +19,7 @@
 #define CAN_TRAFFIC_FILE_PATH DATA_DIR "sample-can.log"
 
 pid_t create_can_traffic_process(char *interface_name);
-int create_can_socket(char *interface_name);
+int create_can_socket(char *interface_name, int is_random);
 void send_pkt(int mtu, struct canfd_frame *cf, int sock);
 void cleanup_can_socket(int sock);
 void cleanup_can_traffic_process();

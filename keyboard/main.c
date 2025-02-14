@@ -30,13 +30,19 @@ void usage(char *msg)
 	exit(1);
 }
 
-char *parse_arguments(int argc, char *argv[])
+char *parse_arguments(int argc, char *argv[], int *is_random)
 {
 	int opt;
-	while ((opt = getopt(argc, argv, "h?")) != -1)
+
+	*is_random = 0;
+
+	while ((opt = getopt(argc, argv, "rh?")) != -1)
 	{
 		switch (opt)
 		{
+		case 'r':
+			*is_random = 1
+			break;
 		case 'h':
 		case '?':
 		default:
@@ -250,9 +256,10 @@ int main(int argc, char *argv[])
 	pid_t traffic_pid;
 	int sock = -1;
 	gui_data_t gui_data = {NULL, NULL, NULL, NULL};
+	int is_random;
 
-	interface_name = parse_arguments(argc, argv);
-	traffic_pid = create_can_traffic_process(interface_name);
+	interface_name = parse_arguments(argc, argv, &is_random);
+	traffic_pid = create_can_traffic_process(interface_name, is_random);
 	sock = create_can_socket(interface_name);
 	gui_data = setup_gui();
 

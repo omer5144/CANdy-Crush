@@ -10,7 +10,7 @@ void kill_child(int sig)
 	}
 }
 
-pid_t create_can_traffic_process(char *interface_name)
+pid_t create_can_traffic_process(char *interface_name, int is_random)
 {
 	char can2can[50];
 
@@ -23,12 +23,15 @@ pid_t create_can_traffic_process(char *interface_name)
 	}
 	else if (traffic_pid == 0)
 	{
-		snprintf(can2can, 49, "%s=can0", interface_name);
-		if (execlp("canplayer", "canplayer", "-I", CAN_TRAFFIC_FILE_PATH, "-l", "i", can2can, NULL) == -1)
+		if (is_random)
 		{
-			printf("WARNING: Could not execute canplayer. No bg data\n");
+			snprintf(can2can, 49, "%s=can0", interface_name);
+			if (execlp("canplayer", "canplayer", "-I", CAN_TRAFFIC_FILE_PATH, "-l", "i", can2can, NULL) == -1)
+			{
+				printf("WARNING: Could not execute canplayer. No bg data\n");
+			}
+			exit(0);
 		}
-		exit(0);
 	}
 
 	return traffic_pid;
