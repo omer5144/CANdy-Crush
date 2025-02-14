@@ -27,7 +27,13 @@ def control_song(interface: str) -> None:
         while not g_stop:
             bus.recv()
             bus.send(zero_xor)
-            bus.send(g_song_state.encode())
+            bus.send(
+                can.Message(
+                    arbitration_id=SONG_ID,
+                    is_extended_id=False,
+                    data=g_song_state.encode(),
+                )
+            )
 
 
 def input_song(interface: str) -> None:
