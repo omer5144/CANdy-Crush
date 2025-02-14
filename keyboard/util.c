@@ -105,6 +105,6 @@ int is_process_running(pid_t pid)
 		return 0;
 	} else {
 		perror("waitpid");
-		return 1;
+		return 0;
 	}
 }
