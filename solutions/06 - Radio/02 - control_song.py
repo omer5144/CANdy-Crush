@@ -47,7 +47,7 @@ def input_song(interface: str) -> None:
         ) as bus:
             while True:
                 try:
-                    g_song_state = int(input("Enter song:   "))
+                    g_song_state = input("Enter song:   ")
                 except Exception:
                     print("Invalid input")
     finally:
