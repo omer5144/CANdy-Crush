@@ -19,9 +19,15 @@
 #define DATA_DIR "./data/"
 #define CAN_TRAFFIC_FILE_PATH DATA_DIR "sample-can.log"
 
+typedef struct
+{
+	int id;
+	int size;
+	int len;
+} random_option_t;
+
 pid_t create_can_traffic_process(char *interface_name, int is_log);
 int create_can_socket(char *interface_name);
-void send_random_can_message(int sock);
 void send_pkt(int mtu, struct canfd_frame *cf, int sock);
 void cleanup_can_socket(int sock);
 void cleanup_can_traffic_process();
