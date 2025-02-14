@@ -36,7 +36,7 @@ def input_temperature(interface: str) -> None:
                         can.Message(
                             arbitration_id=TEMPERATURE_ID,
                             is_extended_id=False,
-                            data=checksum(temperature).to_bytes(1, "big") + temperature,
+                            data=temperature + checksum(temperature).to_bytes(1, "big"),
                         )
                     )
 
