@@ -6,7 +6,7 @@ import enum
 import can
 
 
-HORN_ID = 0xBEE
+HORN_ID = 0x3EE
 NO_BEEP_DATA = b"\x00\x00\x00\x00\x00\x00\x00\x00"
 BEEP_DATA = b"\x01\x00\x00\x00\x00\x00\x00\x00"
 

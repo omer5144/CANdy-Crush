@@ -10,7 +10,7 @@ You will need:
 * can-utils
 
 ```
-  sudo apt-get install libsdl2-dev libsdl2-image-dev libsdl-ttf-dev can-utils  
+  sudo apt-get install libsdl2-dev libsdl2-image-dev libsdl2-ttf-dev can-utils  
 ```
 
 With dependencies installed, you may build the project:
