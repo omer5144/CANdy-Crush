@@ -34,7 +34,7 @@ gui_data_t setup_gui()
         goto error;
     }
 
-	gui_data.window = SDL_CreateWindow("ARAMobile Keyboard", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
+	gui_data.window = SDL_CreateWindow("ILANehiga Keyboard", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
 	if (gui_data.window == NULL)
 	{
 		perror("Window could not be shown\n");

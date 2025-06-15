@@ -10,7 +10,7 @@ KEY_ID = 0x28B
 SONG_ID = 0x28C
 
 
-g_song_state = "ARAM"
+g_song_state = "ILAN"
 g_stop = False
 
 

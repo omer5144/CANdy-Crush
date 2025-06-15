@@ -240,7 +240,7 @@ gui_data_t setup_gui()
         goto error;
     }
     
-    gui_data.window = SDL_CreateWindow("ARAMobile Dashboard", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT,
+    gui_data.window = SDL_CreateWindow("ILANehiga Dashboard", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT,
                                        SDL_WINDOW_SHOWN);
     if (gui_data.window == NULL)
     {
